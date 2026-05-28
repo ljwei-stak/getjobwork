@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import edu.guigu.accountbook.data.dao.CategorySummary
 import edu.guigu.accountbook.databinding.FragmentStatisticsBinding
 import edu.guigu.accountbook.ui.viewmodel.RecordViewModel
 import edu.guigu.accountbook.util.DateUtils
