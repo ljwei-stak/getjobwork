@@ -11,6 +11,7 @@ import edu.guigu.accountbook.ui.task.Task1Activity
 import edu.guigu.accountbook.ui.task.Task2Activity
 import edu.guigu.accountbook.ui.task.Task3Activity
 import edu.guigu.accountbook.ui.task.Task4Activity
+import edu.guigu.accountbook.ui.task.Task5Activity
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,5 +33,6 @@ class MainActivity : AppCompatActivity() {
         binding.cardTask2.setOnClickListener { startActivity(Intent(this, Task2Activity::class.java)) }
         binding.cardTask3.setOnClickListener { startActivity(Intent(this, Task3Activity::class.java)) }
         binding.cardTask4.setOnClickListener { startActivity(Intent(this, Task4Activity::class.java)) }
+        binding.cardTask5.setOnClickListener { startActivity(Intent(this, Task5Activity::class.java)) }
     }
 }

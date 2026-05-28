@@ -1,14 +1,15 @@
 # 📝 个人记账本 (AccountBook)
 
-一个基于 Android 的记账本应用，采用渐进式学习设计，包含 4 个逐步进阶的任务模块。
+一个基于 Android 的记账本应用，采用渐进式学习设计，包含 5 个逐步进阶的任务模块。
 
 ## 🎯 项目简介
 
-本项目是一个功能完整的记账本应用，通过 Task1-Task4 四个阶段逐步展示 Android 开发的核心技术：
+本项目是一个功能完整的记账本应用，通过 Task1-Task5 五个阶段逐步展示 Android 开发的核心技术：
 - **Task 1**: Tab 切换 + Fragment 基础架构
 - **Task 2**: RecyclerView 精美列表展示
 - **Task 3**: Room 数据库持久化存储
 - **Task 4**: 完整的增删改查功能
+- **Task 5**: 实时统计图表展示
 
 ## ✨ 功能特性
 
@@ -36,6 +37,13 @@
 - ✅ Spinner 分类联动
 - ✅ 长按删除 + 确认对话框
 - ✅ 输入校验
+
+### Task 5 - 财务分析师 📊
+- ✅ 实时统计总收入、总支出、结余
+- ✅ LiveData 跨 Fragment 数据共享
+- ✅ 自动计算与更新（账单页改动 → 统计页刷新）
+- ✅ 三列汇总卡片（绿色收入、红色支出、蓝色结余）
+- ✅ 饼图占位区（为进阶篇预留）
 
 ## 🛠️ 技术栈
 
@@ -70,6 +78,10 @@
 ### Task 4 - 增删改查
 ![Task4](screenshots/task4.png)
 *完整的记账功能：添加、编辑、删除*
+
+### Task 5 - 实时统计
+![Task5](screenshots/task5.png)
+*三列汇总卡片实时显示收入/支出/结余，数据自动同步*
 
 ## 🚀 快速开始
 
@@ -124,7 +136,8 @@ getjobwork/
 │   │   │   │   │   ├── Task1Activity.kt
 │   │   │   │   │   ├── Task2Activity.kt
 │   │   │   │   │   ├── Task3Activity.kt
-│   │   │   │   │   └── Task4Activity.kt
+│   │   │   │   │   ├── Task4Activity.kt
+│   │   │   │   │   └── Task5Activity.kt
 │   │   │   │   └── viewmodel/        # 视图模型
 │   │   │   │       └── RecordViewModel.kt
 │   │   │   ├── util/                  # 工具类

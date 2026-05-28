@@ -1716,4 +1716,427 @@ class BillsFragment : Fragment() {
 | <font style="color:rgb(51, 51, 51);">7</font> | **<font style="color:rgb(51, 51, 51);">持久化</font>** | <font style="color:rgb(51, 51, 51);">添加 2 条记录 → 关闭 App（从任务管理器划掉）→ 重新打开</font> | <font style="color:rgb(51, 51, 51);">之前添加的 2 条记录仍然显示</font> | <font style="color:rgb(51, 51, 51);">Room 数据库写入是否成功；提交事务是否正常</font> |
 
 
+# <font style="color:rgb(51, 51, 51);">Task 5：</font><font style="color:rgb(51, 51, 51);">📊</font><font style="color:rgb(51, 51, 51);"> 财务分析师 —— 统计图表一目了然</font>
+**<font style="color:rgb(119, 119, 119);">关键词</font>**<font style="color:rgb(119, 119, 119);">：数据汇总、LiveData 观察、跨 Fragment 共享</font>**<font style="color:rgb(119, 119, 119);">今天结束时你能看到</font>**<font style="color:rgb(119, 119, 119);">：统计页实时显示总收入/总支出/结余，切换到账单页改数据，再回来金额自动刷新！</font>
+
+## <font style="color:rgb(51, 51, 51);">5.1 创建统计页布局（15 分钟）</font>
+<font style="color:rgb(119, 119, 119);">统计页之前只是一个占位 TextView，现在来画真正的布局。</font>
+
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/layout/fragment_statistics.xml</font>`<font style="color:rgb(51, 51, 51);">（</font>**<font style="color:rgb(51, 51, 51);">新建文件或替换 Day 1 创建的占位文件</font>**<font style="color:rgb(51, 51, 51);">）：</font>
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/bg_light"
+  android:fillViewport="true">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- ===== 1. 本月汇总卡片 ===== -->
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+      <!-- 本月收入 -->
+      <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="#2ECC71"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:contentPadding="16dp">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:orientation="vertical">
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/month_income"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+          <TextView
+            android:id="@+id/tv_income"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="¥0.00"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        </LinearLayout>
+      </com.google.android.material.card.MaterialCardView>
+
+      <!-- 本月支出 -->
+      <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="#E74C3C"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:contentPadding="16dp">
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:orientation="vertical">
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/month_expense"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+          <TextView
+            android:id="@+id/tv_expense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="¥0.00"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        </LinearLayout>
+      </com.google.android.material.card.MaterialCardView>
+
+      <!-- 本月结余 -->
+      <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#3498DB"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:contentPadding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/month_balance"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tv_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="¥0.00"
+                        android:textColor="@android:color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- ===== 2. 支出分类统计标题 + 饼图占位 ===== -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:contentPadding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/expense_breakdown"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <!-- 饼图占位（进阶篇 X1 会用 MPAndroidChart 替换它） -->
+                <View
+                    android:id="@+id/pie_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:layout_marginTop="12dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>
+```
+
+<font style="color:rgb(119, 119, 119);">解读：用 </font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">MaterialCardView</font>`<font style="color:rgb(119, 119, 119);"> + 蓝/绿/红三色背景画汇总卡片。</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">tv_income</font>`<font style="color:rgb(119, 119, 119);">、</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">tv_expense</font>`<font style="color:rgb(119, 119, 119);">、</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">tv_balance</font>`<font style="color:rgb(119, 119, 119);"> 就是 5.2 中代码要操控的三个金额控件。饼图部分先用 </font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);"><View></font>`<font style="color:rgb(119, 119, 119);"> 占位，进阶篇 X1 会换成真正的图表。</font>
+
+## <font style="color:rgb(51, 51, 51);">5.2 完善 StatisticsFragment——数据自动刷新（20 分钟）</font>
+<font style="color:rgb(51, 51, 51);">替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">StatisticsFragment.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import edu.guigu.accountbook.databinding.FragmentStatisticsBinding
+import edu.guigu.accountbook.ui.viewmodel.RecordViewModel
+import edu.guigu.accountbook.util.DateUtils
+
+class StatisticsFragment : Fragment() {
+
+    private var _binding: FragmentStatisticsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var viewModel: RecordViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentStatisticsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // ★ 必须用 requireActivity() 才能和 BillsFragment 共享同一个 ViewModel
+        viewModel = ViewModelProvider(requireActivity())[RecordViewModel::class.java]
+
+        observeData()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun observeData() {
+        // 观察总收入 → 更新显示
+        viewModel.totalIncome.observe(viewLifecycleOwner) { income ->
+            binding.tvIncome.text = "¥${DateUtils.formatAmount(income)}"
+            updateBalance()
+        }
+
+        // 观察总支出 → 更新显示
+        viewModel.totalExpense.observe(viewLifecycleOwner) { expense ->
+            binding.tvExpense.text = "¥${DateUtils.formatAmount(expense)}"
+            updateBalance()
+        }
+    }
+
+    /** 计算结余 = 收入 - 支出 */
+    private fun updateBalance() {
+        val income = viewModel.totalIncome.value ?: 0.0
+        val expense = viewModel.totalExpense.value ?: 0.0
+        val balance = income - expense
+        binding.tvBalance.text = "¥${DateUtils.formatAmount(balance)}"
+    }
+}
+```
+
+## <font style="color:rgb(51, 51, 51);">5.3 运行联调测试（10 分钟）</font>
+<font style="color:rgb(51, 51, 51);">点击 </font><font style="color:rgb(51, 51, 51);">▶</font><font style="color:rgb(51, 51, 51);"> 运行，做一次完整体验：</font>
+
+1. <font style="color:rgb(51, 51, 51);">在</font>**<font style="color:rgb(51, 51, 51);">账单页</font>**<font style="color:rgb(51, 51, 51);">添加一条"工资，+8000"</font>
+2. <font style="color:rgb(51, 51, 51);">切换到</font>**<font style="color:rgb(51, 51, 51);">统计页</font>**<font style="color:rgb(51, 51, 51);">→ 收入变成 8000.00，结余 8000.00</font>
+3. <font style="color:rgb(51, 51, 51);">切换回账单页，添加一条"餐饮，-35.50"</font>
+4. <font style="color:rgb(51, 51, 51);">再切到</font>**<font style="color:rgb(51, 51, 51);">统计页</font>**<font style="color:rgb(51, 51, 51);">→ 收入 8000.00、支出 35.50、结余 7964.50</font>
+5. <font style="color:rgb(51, 51, 51);">删除工资记录 → 统计页数字归零</font>
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ <font style="color:rgb(51, 51, 51);">三列数字实时更新，颜色清晰：收入绿、支出红、结余蓝</font>
++ <font style="color:rgb(51, 51, 51);">两边数据完全同步，一次改动两页刷新</font>
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">Day 5 成就解锁</font>**<font style="color:rgb(119, 119, 119);">：完整的个人记账本 App 完成！从零到上线，5 天搞定！</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 5 检查清单</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">fragment_statistics.xml</font>`<font style="color:rgb(51, 51, 51);"> 包含本月收入、本月支出、本月结余三张汇总卡片（蓝色渐变色），以及支出分类统计标题</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">fragment_statistics.xml</font>`<font style="color:rgb(51, 51, 51);"> 三张卡片分别有 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">tv_income</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">tv_expense</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">tv_balance</font>`<font style="color:rgb(51, 51, 51);"> 三个金额 TextView</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">StatisticsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 使用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ViewModelProvider(requireActivity())</font>`<font style="color:rgb(51, 51, 51);"> 共享 ViewModel（</font>**<font style="color:rgb(51, 51, 51);">不是 </font>**`**<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">this</font>**`<font style="color:rgb(51, 51, 51);">）</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">StatisticsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 中观察 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">totalIncome</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">totalExpense</font>`<font style="color:rgb(51, 51, 51);">，并分别在回调中调用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">updateBalance()</font>`
++ <font style="color:rgb(51, 51, 51);">结余 = 收入 - 支出，实时计算，颜色蓝</font>
++ <font style="color:rgb(51, 51, 51);">账单页添加/编辑/删除记录后，切到统计页，数字自动更新</font>
++ <font style="color:rgb(51, 51, 51);">两个 Fragment 共享同一个 ViewModel 实例，数据完全同步</font>
++ <font style="color:rgb(51, 51, 51);">完整流程测试通过：添加收入 → 添加支出 → 统计页验证 → 删除 → 统计页归零</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 5 测试用例</font>
+<font style="color:rgb(119, 119, 119);">测试方法：每个用例必须按顺序执行（因为数据会累积），全部通过才算 Day 5 完成。</font>
+
+| **<font style="color:rgb(51, 51, 51);">#</font>** | **<font style="color:rgb(51, 51, 51);">测试场景</font>** | **<font style="color:rgb(51, 51, 51);">操作步骤</font>** | **<font style="color:rgb(51, 51, 51);">预期结果</font>** | **<font style="color:rgb(51, 51, 51);">不通过的排查方向</font>** |
+| :---: | :--- | :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">1</font> | **<font style="color:rgb(51, 51, 51);">统计页布局</font>** | <font style="color:rgb(51, 51, 51);">打开 App，切换到统计 Tab</font> | <font style="color:rgb(51, 51, 51);">显示三张卡片："本月收入 ¥0.00"（绿色）、"本月支出 ¥0.00"（红色）、"本月结余 ¥0.00"（蓝色）</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">fragment_statistics.xml</font>`<br/><font style="color:rgb(51, 51, 51);"> 布局是否正确；三个 TextView 的 id 是否正确</font> |
+| <font style="color:rgb(51, 51, 51);">2</font> | **<font style="color:rgb(51, 51, 51);">添加收入 → 统计联动</font>** | <font style="color:rgb(51, 51, 51);">账单页添加一条"工资 +¥8000.00"→ 切换到统计页</font> | <font style="color:rgb(51, 51, 51);">收入显示 ¥8000.00，支出显示 ¥0.00，结余显示 ¥8000.00（蓝色）</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ViewModelProvider(requireActivity())</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否正确共享 ViewModel；</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">observe</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否正常工作</font> |
+| <font style="color:rgb(51, 51, 51);">3</font> | **<font style="color:rgb(51, 51, 51);">添加支出 → 统计联动</font>** | <font style="color:rgb(51, 51, 51);">切回账单页 → 添加一条"餐饮 -¥35.50" → 切回统计页</font> | <font style="color:rgb(51, 51, 51);">收入 ¥8000.00、支出 ¥35.50、结余 ¥7964.50</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">totalExpense</font>`<br/><font style="color:rgb(51, 51, 51);"> 的 observe 是否触发；</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">updateBalance()</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否正确计算</font> |
+| <font style="color:rgb(51, 51, 51);">4</font> | **<font style="color:rgb(51, 51, 51);">编辑 → 统计更新</font>** | <font style="color:rgb(51, 51, 51);">账单页点击"餐饮"编辑为 ¥100.00 → 切到统计页</font> | <font style="color:rgb(51, 51, 51);">支出更新为 ¥100.00，结余更新为 ¥7900.00</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">viewModel.update()</font>`<br/><font style="color:rgb(51, 51, 51);"> 后 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">refreshData()</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否被调用</font> |
+| <font style="color:rgb(51, 51, 51);">5</font> | **<font style="color:rgb(51, 51, 51);">删除 → 统计归零</font>** | <font style="color:rgb(51, 51, 51);">账单页长按删除"工资"和"餐饮"两条 → 切到统计页</font> | <font style="color:rgb(51, 51, 51);">收入 ¥0.00、支出 ¥0.00、结余 ¥0.00</font> | <font style="color:rgb(51, 51, 51);">所有记录删除后，统计数字是否归零</font> |
+| <font style="color:rgb(51, 51, 51);">6</font> | **<font style="color:rgb(51, 51, 51);">频繁切换</font>** | <font style="color:rgb(51, 51, 51);">在账单和统计之间快速切换 10 次</font> | <font style="color:rgb(51, 51, 51);">不崩溃、数字不闪烁、始终显示正确值</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">viewLifecycleOwner</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否正确使用</font> |
+| <font style="color:rgb(51, 51, 51);">7</font> | **<font style="color:rgb(51, 51, 51);">数据同步一致性</font>** | <font style="color:rgb(51, 51, 51);">账单页添加 3 条不同记录，每添加一条就切到统计页看一眼</font> | <font style="color:rgb(51, 51, 51);">每次切换统计页显示的数字都与账单页记录总额一致</font> | <font style="color:rgb(51, 51, 51);">两个 Fragment 确实拿到了同一个 ViewModel 实例</font> |
+
+
+---
+
+## <font style="color:rgb(51, 51, 51);">5.4 </font><font style="color:rgb(51, 51, 51);">🏗️</font><font style="color:rgb(51, 51, 51);"> 打包 APK —— 产出你的第一个安装包（15 分钟）</font>
+<font style="color:rgb(119, 119, 119);">写了这么多天代码，该把它变成真正能装在手机上的 APK 了！</font>
+
+### <font style="color:rgb(51, 51, 51);">为什么做这个</font>
+<font style="color:rgb(51, 51, 51);">到现在为止你一直用 "</font><font style="color:rgb(51, 51, 51);">▶</font><font style="color:rgb(51, 51, 51);"> Run" 在模拟器或连接手机上调试。但真正的成品应该是一个 </font>**<font style="color:rgb(51, 51, 51);">APK 文件</font>**<font style="color:rgb(51, 51, 51);">——就像你去应用商店下载到的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">.apk</font>`<font style="color:rgb(51, 51, 51);"> 一样。把这个 APK 发给朋友，他们就能安装你的记账本！</font>
+
+### <font style="color:rgb(51, 51, 51);">打包流程</font>
+<font style="color:rgb(51, 51, 51);">打包分两种模式：</font>**<font style="color:rgb(51, 51, 51);">Debug（调试版）</font>**<font style="color:rgb(51, 51, 51);">和 </font>**<font style="color:rgb(51, 51, 51);">Release（正式版）</font>**<font style="color:rgb(51, 51, 51);">。先做 Debug 版，再做带签名的 Release 版。</font>
+
+#### <font style="color:rgb(51, 51, 51);">① 打包 Debug APK（5 分钟）</font>
+<font style="color:rgb(51, 51, 51);">Debug 版无需签名，直接打包，适合快速测试。</font>
+
+**<font style="color:rgb(51, 51, 51);">操作步骤</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
+1. <font style="color:rgb(51, 51, 51);">在 Android Studio 顶部菜单 → </font>**<font style="color:rgb(51, 51, 51);">Build</font>**<font style="color:rgb(51, 51, 51);"> → </font>**<font style="color:rgb(51, 51, 51);">Build Bundle(s) / APK(s)</font>**<font style="color:rgb(51, 51, 51);"> → </font>**<font style="color:rgb(51, 51, 51);">Build APK(s)</font>**
+2. <font style="color:rgb(51, 51, 51);">等待右下角进度条完成（约 30 秒 ~ 2 分钟）</font>
+3. <font style="color:rgb(51, 51, 51);">完成后右下角弹出通知，点击 </font>**<font style="color:rgb(51, 51, 51);">locate</font>**<font style="color:rgb(51, 51, 51);"> 即可打开 APK 所在目录</font>
+
+默认路径：app/build/outputs/apk/debug/app-debug.apk
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app-debug.apk</font>`<font style="color:rgb(51, 51, 51);"> 文件约 5~8 MB</font>
++ <font style="color:rgb(51, 51, 51);">可以直接通过 adb 安装：</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">adb install app-debug.apk</font>`
++ <font style="color:rgb(51, 51, 51);">也可以通过微信/QQ 发给朋友安装（需关闭"纯净模式"或开启"允许安装未知应用"）</font>
+
+<font style="color:rgb(119, 119, 119);">Debug APK 使用默认的 debug 签名，有效期 30 年，够用但不适合正式发布。</font>
+
+#### <font style="color:rgb(51, 51, 51);">② 生成正式签名 + 打包 Release APK（10 分钟）</font>
+<font style="color:rgb(51, 51, 51);">Release 版需要</font>**<font style="color:rgb(51, 51, 51);">自己的签名文件</font>**<font style="color:rgb(51, 51, 51);">（相当于 App 的身份证），上架应用商店必须用正式签名。</font>
+
+**<font style="color:rgb(51, 51, 51);">第一步：生成签名文件（密钥库）</font>**
+
+1. <font style="color:rgb(51, 51, 51);">顶部菜单 → </font>**<font style="color:rgb(51, 51, 51);">Build</font>**<font style="color:rgb(51, 51, 51);"> → </font>**<font style="color:rgb(51, 51, 51);">Generate Signed Bundle / APK...</font>**
+2. <font style="color:rgb(51, 51, 51);">选择 </font>**<font style="color:rgb(51, 51, 51);">APK</font>**<font style="color:rgb(51, 51, 51);"> → Next</font>
+3. <font style="color:rgb(51, 51, 51);">在 Key store path 旁点击 </font>**<font style="color:rgb(51, 51, 51);">Create new...</font>**
+4. <font style="color:rgb(51, 51, 51);">填写以下信息：</font>
+
+| **<font style="color:rgb(51, 51, 51);">字段</font>** | **<font style="color:rgb(51, 51, 51);">说明</font>** | **<font style="color:rgb(51, 51, 51);">示例</font>** |
+| :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">Key store path</font> | <font style="color:rgb(51, 51, 51);">密钥文件保存路径 + 文件名</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">C:\Users\你的用户名\accountbook.jks</font>` |
+| <font style="color:rgb(51, 51, 51);">Password</font> | <font style="color:rgb(51, 51, 51);">密钥库密码（记住它！）</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">abc123456</font>` |
+| <font style="color:rgb(51, 51, 51);">Confirm</font> | <font style="color:rgb(51, 51, 51);">重复输入密码</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">abc123456</font>` |
+| <font style="color:rgb(51, 51, 51);">Key Alias</font> | <font style="color:rgb(51, 51, 51);">密钥别名</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">accountbook</font>` |
+| <font style="color:rgb(51, 51, 51);">Key Password</font> | <font style="color:rgb(51, 51, 51);">密钥密码（可与上面相同）</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">abc123456</font>` |
+| <font style="color:rgb(51, 51, 51);">Validity (years)</font> | <font style="color:rgb(51, 51, 51);">有效期（年）</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">25</font>` |
+| <font style="color:rgb(51, 51, 51);">Certificate 字段</font> | <font style="color:rgb(51, 51, 51);">组织/姓名等信息</font> | <font style="color:rgb(51, 51, 51);">可留空，只填 First Name 即可</font> |
+
+
+5. <font style="color:rgb(51, 51, 51);">点击 </font>**<font style="color:rgb(51, 51, 51);">OK</font>**<font style="color:rgb(51, 51, 51);"> 返回，选择刚才生成的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">.jks</font>`<font style="color:rgb(51, 51, 51);"> 文件</font>
+6. <font style="color:rgb(51, 51, 51);">输入密钥库密码和密钥密码，勾选 </font>**<font style="color:rgb(51, 51, 51);">Remember passwords</font>**<font style="color:rgb(51, 51, 51);"> → Next</font>
+7. <font style="color:rgb(51, 51, 51);">选择 </font>**<font style="color:rgb(51, 51, 51);">release</font>**<font style="color:rgb(51, 51, 51);"> 构建变体 → 勾选 </font>**<font style="color:rgb(51, 51, 51);">V1</font>**<font style="color:rgb(51, 51, 51);"> 和 </font>**<font style="color:rgb(51, 51, 51);">V2</font>**<font style="color:rgb(51, 51, 51);"> 签名版本 → </font>**<font style="color:rgb(51, 51, 51);">Finish</font>**
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app/build/outputs/apk/release/app-release.apk</font>`
++ <font style="color:rgb(51, 51, 51);">文件比 Debug 版更小（约 3~5 MB，因为开启了代码压缩）</font>
++ <font style="color:rgb(51, 51, 51);">这个 APK 就是</font>**<font style="color:rgb(51, 51, 51);">正式版</font>**<font style="color:rgb(51, 51, 51);">，可以直接上架应用商店！</font>
+
+#### <font style="color:rgb(51, 51, 51);">③ 减少 APK 体积（可选优化）</font>
+<font style="color:rgb(51, 51, 51);">在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app/build.gradle.kts</font>`<font style="color:rgb(51, 51, 51);"> 的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">android {}</font>`<font style="color:rgb(51, 51, 51);"> 块中添加：</font>
+
+```kotlin
+android {
+    // ... 已有配置不变 ...
+
+    buildTypes {
+        release {
+            isMinifyEnabled = true          // 启用代码混淆和压缩
+            isShrinkResources = true        // 移除未使用的资源文件
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+}
+```
+
+<font style="color:rgb(51, 51, 51);">加上这些配置后重新 Build Release APK，体积可再减少 30%~50%。</font>
+
+### <font style="color:rgb(51, 51, 51);">⚠️</font><font style="color:rgb(51, 51, 51);"> APK 打包常见问题</font>
+| **<font style="color:rgb(51, 51, 51);">问题</font>** | **<font style="color:rgb(51, 51, 51);">原因</font>** | **<font style="color:rgb(51, 51, 51);">解决办法</font>** |
+| :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">安装时提示"安装包解析错误"</font> | <font style="color:rgb(51, 51, 51);">APK 文件下载不完整或签名版本不兼容</font> | <font style="color:rgb(51, 51, 51);">确保勾选 V1 + V2 签名；重新拷贝一次文件</font> |
+| <font style="color:rgb(51, 51, 51);">安装时提示"未安装应用程序"</font> | <font style="color:rgb(51, 51, 51);">手机已有相同包名但不同签名的应用</font> | <font style="color:rgb(51, 51, 51);">先卸载旧版本再安装</font> |
+| <font style="color:rgb(51, 51, 51);">微信发送的 APK 无法安装</font> | <font style="color:rgb(51, 51, 51);">微信默认改后缀为 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">.apk.1</font>` | <font style="color:rgb(51, 51, 51);">用文件管理器把 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">.apk.1</font>`<br/><font style="color:rgb(51, 51, 51);"> 改回 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">.apk</font>`<br/><font style="color:rgb(51, 51, 51);"> 再安装</font> |
+| <font style="color:rgb(51, 51, 51);">密钥库密码忘了</font> | <font style="color:rgb(51, 51, 51);">—</font> | **<font style="color:rgb(51, 51, 51);">无法找回！</font>**<font style="color:rgb(51, 51, 51);"> 务必把密码记在安全的地方，或创建时用简单好记的密码</font> |
+| <font style="color:rgb(51, 51, 51);">Release APK 安装后闪退</font> | <font style="color:rgb(51, 51, 51);">混淆规则把 Room 实体类混淆了</font> | <font style="color:rgb(51, 51, 51);">在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">proguard-rules.pro</font>`<br/><font style="color:rgb(51, 51, 51);"> 中加入 Room 混淆规则（初次可不开启 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">isMinifyEnabled</font>`<br/><font style="color:rgb(51, 51, 51);">）</font> |
+
+
+### <font style="color:rgb(51, 51, 51);">产出物清单</font>
+| **<font style="color:rgb(51, 51, 51);">文件</font>** | **<font style="color:rgb(51, 51, 51);">位置</font>** | **<font style="color:rgb(51, 51, 51);">用途</font>** |
+| :--- | :--- | :--- |
+| `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app-debug.apk</font>` | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app/build/outputs/apk/debug/</font>` | <font style="color:rgb(51, 51, 51);">快速测试用，发给朋友尝鲜</font> |
+| `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app-release.apk</font>` | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app/build/outputs/apk/release/</font>` | <font style="color:rgb(51, 51, 51);">正式版，可上架应用商店</font> |
+| `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">accountbook.jks</font>` | <font style="color:rgb(51, 51, 51);">你保存的路径</font> | <font style="color:rgb(51, 51, 51);">签名密钥，</font>**<font style="color:rgb(51, 51, 51);">妥善保管，丢了无法更新 App</font>** |
+
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">终极成就解锁</font>**<font style="color:rgb(119, 119, 119);">：你不仅写出了一个完整的记账本，还把它打包成了可以分享的 APK！用它记录你的每一笔花费吧！</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">🏁</font><font style="color:rgb(51, 51, 51);"> 结业测试清单（全部通过即完成）</font>
+| **<font style="color:rgb(51, 51, 51);">#</font>** | **<font style="color:rgb(51, 51, 51);">测试场景</font>** | **<font style="color:rgb(51, 51, 51);">预期结果</font>** |
+| :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">1</font> | <font style="color:rgb(51, 51, 51);">添加一条支出记录</font> | <font style="color:rgb(51, 51, 51);">列表出现红色金额卡片</font> |
+| <font style="color:rgb(51, 51, 51);">2</font> | <font style="color:rgb(51, 51, 51);">添加一条收入记录</font> | <font style="color:rgb(51, 51, 51);">列表出现绿色金额卡片</font> |
+| <font style="color:rgb(51, 51, 51);">3</font> | <font style="color:rgb(51, 51, 51);">切换到统计页</font> | <font style="color:rgb(51, 51, 51);">收入/支出/结余正确</font> |
+| <font style="color:rgb(51, 51, 51);">4</font> | <font style="color:rgb(51, 51, 51);">点击一条记录</font> | <font style="color:rgb(51, 51, 51);">弹出编辑框，可修改</font> |
+| <font style="color:rgb(51, 51, 51);">5</font> | <font style="color:rgb(51, 51, 51);">长按一条记录</font> | <font style="color:rgb(51, 51, 51);">弹出删除确认，确认后消失</font> |
+| <font style="color:rgb(51, 51, 51);">6</font> | <font style="color:rgb(51, 51, 51);">关闭 App 重新打开</font> | <font style="color:rgb(51, 51, 51);">所有数据仍在</font> |
+| <font style="color:rgb(51, 51, 51);">7</font> | <font style="color:rgb(51, 51, 51);">添加多条记录</font> | <font style="color:rgb(51, 51, 51);">列表按日期倒序排列</font> |
+| <font style="color:rgb(51, 51, 51);">8</font> | <font style="color:rgb(51, 51, 51);">添加无备注记录</font> | <font style="color:rgb(51, 51, 51);">卡片不显示备注行</font> |
+| <font style="color:rgb(51, 51, 51);">9</font> | <font style="color:rgb(51, 51, 51);">切换收支类型</font> | <font style="color:rgb(51, 51, 51);">分类列表自动切换</font> |
+| <font style="color:rgb(51, 51, 51);">10</font> | <font style="color:rgb(51, 51, 51);">修改已编辑的记录</font> | <font style="color:rgb(51, 51, 51);">数据正确更新</font> |
+
+
+---
+
+## <font style="color:rgb(51, 51, 51);">🧰</font><font style="color:rgb(51, 51, 51);"> 常见问题排查</font>
+| **<font style="color:rgb(51, 51, 51);">现象</font>** | **<font style="color:rgb(51, 51, 51);">可能原因</font>** | **<font style="color:rgb(51, 51, 51);">解决</font>** |
+| :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">编译报错找不到 Binding 类</font> | <font style="color:rgb(51, 51, 51);">XML 布局文件中某个 id 写错了</font> | <font style="color:rgb(51, 51, 51);">检查 XML，确保 id 和代码中引用的完全一致</font> |
+| <font style="color:rgb(51, 51, 51);">列表不显示</font> | <font style="color:rgb(51, 51, 51);">Adapter 没有设置，或没有调用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">updateRecords</font>` | <font style="color:rgb(51, 51, 51);">检查 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">rv_records.adapter = adapter</font>`<br/><font style="color:rgb(51, 51, 51);"> 和 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">observe</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否写了</font> |
+| <font style="color:rgb(51, 51, 51);">统计页数字不更新</font> | <font style="color:rgb(51, 51, 51);">ViewModel 没有共享</font> | <font style="color:rgb(51, 51, 51);">检查两个 Fragment 都用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">requireActivity()</font>` |
+| <font style="color:rgb(51, 51, 51);">内存泄漏警告</font> | <font style="color:rgb(51, 51, 51);">Fragment 没在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onDestroyView</font>`<br/><font style="color:rgb(51, 51, 51);"> 中置 null</font> | <font style="color:rgb(51, 51, 51);">必须有 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">_binding = null</font>` |
+| <font style="color:rgb(51, 51, 51);">日期显示 1970 年</font> | <font style="color:rgb(51, 51, 51);">时间戳为 0 或未赋值</font> | <font style="color:rgb(51, 51, 51);">检查 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">System.currentTimeMillis()</font>` |
+| <font style="color:rgb(51, 51, 51);">Spinner 选中无效</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onItemSelectedListener</font>`<br/><font style="color:rgb(51, 51, 51);"> 里用错了 position</font> | <font style="color:rgb(51, 51, 51);">位置 0=支出, 1=收入</font> |
+
+
+
+
 
