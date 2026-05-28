@@ -37,13 +37,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    
-    // Configure source sets for KSP generated code
-    sourceSets {
-        getByName("main") {
-            java.srcDirs("build/generated/ksp/main/kotlin")
-        }
-    }
 }
 
 dependencies {
