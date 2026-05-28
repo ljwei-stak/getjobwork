@@ -83,18 +83,18 @@ class StatisticsFragment : Fragment() {
             val sb = StringBuilder()
             summaries.forEach { summary ->
                 val percentage = if (totalExpense > 0) {
-                    (summary.amount / totalExpense * 100).toInt()
+                    (summary.total / totalExpense * 100).toInt()
                 } else {
                     0
                 }
-                sb.append("• ${summary.category}: ¥${DateUtils.formatAmount(summary.amount)} ($percentage%)\n")
+                sb.append("• ${summary.category}: ¥${DateUtils.formatAmount(summary.total)} ($percentage%)\n")
             }
             binding.tvCategoryStats.text = sb.toString()
             
             // 可以在这里添加日志查看数据
             android.util.Log.d("StatisticsFragment", "支出分类统计: ${summaries.size} 个分类")
             summaries.forEach {
-                android.util.Log.d("StatisticsFragment", "${it.category}: ¥${DateUtils.formatAmount(it.amount)}")
+                android.util.Log.d("StatisticsFragment", "${it.category}: ¥${DateUtils.formatAmount(it.total)}")
             }
         }
     }
