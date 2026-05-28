@@ -57,31 +57,34 @@
 | **ViewPager2** | 1.1.0 | 页面滑动 |
 | **KSP** | 2.2.10-2.0.2 | Kotlin Symbol Processing |
 
-## 📱 界面预览
+##  界面预览
 
 ### 主界面
 ![主界面](screenshots/main_menu.png)
-*任务选择菜单，点击任意卡片进入对应功能*
+*任务选择菜单，包含 Task 1-5 五个渐进式学习模块，点击任意卡片进入对应功能*
 
-### Task 1 - Tab 切换
-![Task1](screenshots/task1.png)
-*账单页和统计页左右滑动切换*
-
-### Task 2 - 精美列表
-![Task2](screenshots/task2.png)
-*彩色卡片展示收支记录*
-
-### Task 3 - 真实数据
-![Task3](screenshots/task3.png)
-*从 Room 数据库读取真实数据*
+### Task 1-3 - 基础功能
+> Task 1-3 主要是基础架构搭建，界面与 Task 4 类似
 
 ### Task 4 - 增删改查
-![Task4](screenshots/task4.png)
-*完整的记账功能：添加、编辑、删除*
 
-### Task 5 - 实时统计
-![Task5](screenshots/task5.png)
-*三列汇总卡片实时显示收入/支出/结余，数据自动同步*
+#### 账单列表
+![Task4 - 账单列表](screenshots/task4_bills.png)
+*精美的卡片式列表，清晰展示收支记录，绿色表示收入，红色表示支出*
+
+#### 添加记录
+![Task4 - 添加记录](screenshots/task4_add_record.png)
+*底部弹窗 (BottomSheetDialog)，支持选择类型、分类、金额、备注和日期*
+
+### Task 5 - 实时统计与饼图
+
+#### 优化后的统计展示（当前版本）
+![Task5 - 统计饼图](screenshots/task5_statistics.png)
+*环形饼图直观展示收支分类占比，包含图例和百分比，数据实时更新*
+
+#### 优化前的统计展示（旧版本）
+![Task5 - 旧版统计](screenshots/task5_old_statistics.png)
+*早期版本使用文本列表展示分类统计，后升级为饼图可视化*
 
 ## 🚀 快速开始
 
