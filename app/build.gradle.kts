@@ -37,14 +37,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    
-    // Configure source sets for KSP generated code (AGP 9.x built-in Kotlin)
-    androidComponents {
-        onVariants { variant ->
-            val kspDir = layout.buildDirectory.dir("generated/ksp/${variant.name}/kotlin")
-            variant.sources.kotlin?.addGeneratedSourceDirectory(kspDir)
-        }
-    }
 }
 
 dependencies {
@@ -64,4 +56,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+}
+
+// Configure KSP generated sources for AGP 9.x
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        val kspKotlinDir = layout.buildDirectory.dir("generated/ksp/${variant.name}/kotlin")
+        variant.sources.kotlin?.addGeneratedSourceDirectory(kspKotlinDir)
+    }
 }
