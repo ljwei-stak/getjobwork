@@ -156,6 +156,17 @@
                     android:layout_height="260dp"
                     android:layout_marginTop="12dp"
                     android:background="#EEEEEE" />
+
+                <!-- 分类统计列表 -->
+                <TextView
+                    android:id="@+id/tv_category_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="暂无支出数据"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="4dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
