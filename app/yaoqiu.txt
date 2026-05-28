@@ -1,0 +1,1719 @@
+
+# <font style="color:rgb(51, 51, 51);">Task 1：</font><font style="color:rgb(51, 51, 51);">🚀</font><font style="color:rgb(51, 51, 51);"> 初识记账本 —— 第一个可交互的 App</font>
+**<font style="color:rgb(119, 119, 119);">关键词</font>**<font style="color:rgb(119, 119, 119);">：项目创建、Tab 切换、Fragment 初体验</font>**<font style="color:rgb(119, 119, 119);">今天结束时你能看到</font>**<font style="color:rgb(119, 119, 119);">：手机上跑着一个能左右滑切换"账单"和"统计"的 App</font>
+
+## <font style="color:rgb(51, 51, 51);">1.1 创建项目（10 分钟）</font>
+<font style="color:rgb(51, 51, 51);">打开 Android Studio → New Project → 选择 </font>**<font style="color:rgb(51, 51, 51);">Empty Views Activity</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
+| **<font style="color:rgb(51, 51, 51);">配置项</font>** | **<font style="color:rgb(51, 51, 51);">填写内容</font>** |
+| :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">Name</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">AccountBook</font>` |
+| <font style="color:rgb(51, 51, 51);">Package name</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">edu.guigu.accountbook</font>` |
+| <font style="color:rgb(51, 51, 51);">Language</font> | **<font style="color:rgb(51, 51, 51);">Kotlin</font>** |
+| <font style="color:rgb(51, 51, 51);">Minimum SDK</font> | **<font style="color:rgb(51, 51, 51);">API 28</font>** |
+
+
+<font style="color:rgb(51, 51, 51);">等 Gradle 同步完成后，点击 </font><font style="color:rgb(51, 51, 51);">▶</font><font style="color:rgb(51, 51, 51);"> 运行，你应该看到 "Hello World" 出现在手机/模拟器上。</font>
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">小成就</font>**<font style="color:rgb(119, 119, 119);">：你已经拥有了一个能运行在手机上的 App！</font>
+
+## <font style="color:rgb(51, 51, 51);">1.2 一次性配好所有依赖（15 分钟）</font>
+<font style="color:rgb(119, 119, 119);">为什么现在配：就像做饭前先把所有调料摆出来，后面 4 天就不用再碰这些文件了。</font>
+
+### <font style="color:rgb(51, 51, 51);">① 【可选】替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">gradle/libs.versions.toml</font>`
+```xml
+[versions]
+agp = "8.13.2"
+kotlin = "2.0.21"
+coreKtx = "1.18.0"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+appcompat = "1.7.1"
+material = "1.13.0"
+activity = "1.13.0"
+constraintlayout = "2.2.1"
+room = "2.6.1"
+lifecycle = "2.8.7"
+fragmentKtx = "1.8.6"
+ksp = "2.0.21-1.0.28"
+mpandroidchart = "3.1.0"
+viewpager2 = "1.1.0"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
+mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
+androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version.ref = "viewpager2" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+```
+
+### <font style="color:rgb(51, 51, 51);">② 替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app/build.gradle.kts</font>`
+```kotlin
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+}
+
+android {
+    namespace = "edu.guigu.accountbook"
+    compileSdk {
+        version = release(36)
+    }
+
+    defaultConfig {
+        applicationId = "edu.guigu.accountbook"
+        minSdk = 30
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+    buildFeatures {
+        viewBinding = true   // ★ 启用 ViewBinding
+    }
+}
+
+dependencies {
+    // 基础库
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    // Room 数据库
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    // MVVM
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
+    // Fragment
+    implementation(libs.androidx.fragment.ktx)
+    // ViewPager2（Tab 切换）
+    implementation(libs.androidx.viewpager2)
+    // 图表库
+    // implementation(libs.mpandroidchart)
+}
+```
+
+### <font style="color:rgb(51, 51, 51);">③ 检查 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">settings.gradle.kts</font>`<font style="color:rgb(51, 51, 51);"> 是否有 JitPack 仓库</font>
+<font style="color:rgb(51, 51, 51);">确保包含 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">maven { url = uri("https://www.jitpack.io") }</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven { url = uri("https://www.jitpack.io") }
+        google()
+        mavenCentral()
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">提示：如果下载慢，可以加上阿里云镜像：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">maven { url = uri("https://maven.aliyun.com/repository/public/") }</font>`
+
+<font style="color:rgb(51, 51, 51);">点击顶部 </font>**<font style="color:rgb(51, 51, 51);">Sync Now</font>**<font style="color:rgb(51, 51, 51);">，等同步完成。</font>
+
+## <font style="color:rgb(51, 51, 51);">1.3 创建颜色和文字资源（10 分钟）</font>
+### <font style="color:rgb(51, 51, 51);">① </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/values/colors.xml</font>`
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="black">#FF000000</color>
+  <color name="white">#FFFFFFFF</color>
+  <color name="colorPrimary">#4A90D9</color>
+  <color name="colorPrimaryDark">#357ABD</color>
+  <color name="colorAccent">#FF6B6B</color>
+  <color name="income_green">#2ECC71</color>
+  <color name="expense_red">#E74C3C</color>
+  <color name="balance_blue">#3498DB</color>
+  <color name="bg_light">#F5F6FA</color>
+  <color name="text_secondary">#999999</color>
+</resources>
+```
+
+### <font style="color:rgb(51, 51, 51);">② </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/values/strings.xml</font>`
+```xml
+<resources>
+  <string name="app_name">个人记账本</string>
+  <string name="tab_bills">账单</string>
+  <string name="tab_statistics">统计</string>
+  <string name="month_income">本月收入</string>
+  <string name="month_expense">本月支出</string>
+  <string name="month_balance">本月结余</string>
+  <string name="expense_breakdown">支出分类统计</string>
+  <string name="recent_records">最近记录</string>
+  <string name="add_record">添加记录</string>
+  <string name="edit_record">编辑记录</string>
+  <string name="save">保存</string>
+  <string name="cancel">取消</string>
+  <string name="delete">删除</string>
+  <string name="confirm_delete">确认删除这条记录吗？</string>
+  <string name="no_records">暂无记录，点击右下角 + 添加</string>
+</resources>
+```
+
+### <font style="color:rgb(51, 51, 51);">③ 创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/values/arrays.xml</font>`
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="record_types">
+    <item>支出</item>
+    <item>收入</item>
+  </string-array>
+</resources>
+```
+
+## <font style="color:rgb(51, 51, 51);">1.4 画主界面布局 —— Tab 栏 + 滑动页面（15 分钟）</font>
+<font style="color:rgb(51, 51, 51);">替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/layout/activity_main.xml</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/main"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/bg_light"
+  android:orientation="vertical"
+  tools:context=".MainActivity">
+
+  <!-- Tab 标签栏：【账单】 【统计】 -->
+  <com.google.android.material.tabs.TabLayout
+    android:id="@+id/tab_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:elevation="2dp"
+    app:tabIndicatorColor="@color/colorPrimary"
+    app:tabIndicatorFullWidth="false"
+    app:tabIndicatorHeight="3dp"
+    app:tabMode="fixed"
+    app:tabSelectedTextColor="@color/colorPrimary"
+    app:tabTextColor="@color/text_secondary" />
+
+  <!-- 页面内容（左右可滑动） -->
+  <androidx.viewpager2.widget.ViewPager2
+    android:id="@+id/view_pager"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1" />
+
+</LinearLayout>
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">LinearLayout(vertical)</font>`<font style="color:rgb(119, 119, 119);"> 表示从上到下排列。</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">0dp + layout_weight="1"</font>`<font style="color:rgb(119, 119, 119);"> 让 ViewPager2 吃掉剩余空间。</font>
+
+## <font style="color:rgb(51, 51, 51);">1.5 编写 MainActivity —— Tab 和页面联动（20 分钟）</font>
+<font style="color:rgb(51, 51, 51);">替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">MainActivity.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook
+
+import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
+import edu.guigu.accountbook.databinding.ActivityMainBinding
+import edu.guigu.accountbook.ui.fragment.BillsFragment
+import edu.guigu.accountbook.ui.fragment.StatisticsFragment
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // 处理状态栏间距
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        initViewPager()
+    }
+
+    private fun initViewPager() {
+        binding.viewPager.adapter = ViewPagerAdapter(this)
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> getString(R.string.tab_bills)
+                1 -> getString(R.string.tab_statistics)
+                else -> ""
+            }
+        }.attach()
+    }
+
+    class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        override fun getItemCount(): Int = 2
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> BillsFragment()
+                1 -> StatisticsFragment()
+                else -> throw IllegalArgumentException()
+            }
+        }
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">TabLayoutMediator(...).attach()</font>`<font style="color:rgb(119, 119, 119);"> 这行是魔法所在 —— 点击 Tab 自动切页面，滑动页面自动切 Tab。</font>
+
+## <font style="color:rgb(51, 51, 51);">1.6 创建两个占位 Fragment（15 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建目录和文件：</font>
+
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ui/fragment/BillsFragment.kt</font>`
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ui/fragment/StatisticsFragment.kt</font>`
+
+**<font style="color:rgb(51, 51, 51);">BillsFragment.kt</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.fragment
+
+import android.graphics.Color
+import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+
+class BillsFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+            ): View {
+        return TextView(requireContext()).apply {
+            text = "📋 账单页\n\n这里将会显示你的记账记录"
+            textSize = 18f
+            gravity = Gravity.CENTER
+            setTextColor(Color.DKGRAY)
+            setBackgroundColor(Color.WHITE)
+        }
+    }
+}
+```
+
+```kotlin
+package edu.guigu.accountbook.ui.fragment
+
+import android.graphics.Color
+import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+
+class StatisticsFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+            ): View {
+        return TextView(requireContext()).apply {
+            text = "📊 统计页\n\n这里将会显示统计数据"
+            textSize = 18f
+            gravity = Gravity.CENTER
+            setTextColor(Color.DKGRAY)
+            setBackgroundColor(Color.WHITE)
+        }
+    }
+}
+```
+
+## <font style="color:rgb(51, 51, 51);">1.7 运行测试（5 分钟）</font>
+<font style="color:rgb(51, 51, 51);">点击 </font><font style="color:rgb(51, 51, 51);">▶</font><font style="color:rgb(51, 51, 51);"> 运行。</font>
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ <font style="color:rgb(51, 51, 51);">顶部有"账单"和"统计"两个标签</font>
++ **<font style="color:rgb(51, 51, 51);">点击标签能切换页面</font>**<font style="color:rgb(51, 51, 51);">，左右滑动也能切</font>
++ <font style="color:rgb(51, 51, 51);">保持这个状态，别删，后面几天继续改</font>
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">Day 1 成就解锁</font>**<font style="color:rgb(119, 119, 119);">：一个能切换页面的 App 骨架完成！</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 1 检查清单</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">gradle/libs.versions.toml</font>`<font style="color:rgb(51, 51, 51);"> 已替换，依赖声明完整</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">app/build.gradle.kts</font>`<font style="color:rgb(51, 51, 51);"> 已替换，</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">viewBinding = true</font>`<font style="color:rgb(51, 51, 51);"> 已启用</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">settings.gradle.kts</font>`<font style="color:rgb(51, 51, 51);"> 包含 JitPack 仓库</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/values/colors.xml</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">strings.xml</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">arrays.xml</font>`<font style="color:rgb(51, 51, 51);"> 已创建</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">activity_main.xml</font>`<font style="color:rgb(51, 51, 51);"> 包含 TabLayout + ViewPager2，且正确引用了命名空间 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">xmlns:app</font>`
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">MainActivity.kt</font>`<font style="color:rgb(51, 51, 51);"> 中 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ViewPagerAdapter</font>`<font style="color:rgb(51, 51, 51);"> 正确返回 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment</font>`<font style="color:rgb(51, 51, 51);"> 和 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">StatisticsFragment</font>`
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 和 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">StatisticsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 已创建，包名路径正确</font>
++ <font style="color:rgb(51, 51, 51);">项目成功编译并运行在手机上</font>
++ <font style="color:rgb(51, 51, 51);">顶部显示"账单"和"统计"两个 Tab，点击可切换</font>
++ <font style="color:rgb(51, 51, 51);">左右滑动页面时 Tab 标签跟随切换</font>
++ <font style="color:rgb(51, 51, 51);">能用自己的话说出 Activity、Fragment、ViewBinding 分别是什么</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 1 测试用例</font>
+<font style="color:rgb(119, 119, 119);">测试方法：每个用例独立执行，全部通过才算 Day 1 完成。</font>
+
+| **<font style="color:rgb(51, 51, 51);">#</font>** | **<font style="color:rgb(51, 51, 51);">测试场景</font>** | **<font style="color:rgb(51, 51, 51);">操作步骤</font>** | **<font style="color:rgb(51, 51, 51);">预期结果</font>** | **<font style="color:rgb(51, 51, 51);">不通过的排查方向</font>** |
+| :---: | :--- | :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">1</font> | **<font style="color:rgb(51, 51, 51);">首次运行</font>** | <font style="color:rgb(51, 51, 51);">点击 </font><font style="color:rgb(51, 51, 51);">▶</font><font style="color:rgb(51, 51, 51);"> 编译运行</font> | <font style="color:rgb(51, 51, 51);">App 正常启动，不闪退，不白屏</font> | <font style="color:rgb(51, 51, 51);">检查 Gradle Sync 是否成功；检查 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">activity_main.xml</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否有语法错误</font> |
+| <font style="color:rgb(51, 51, 51);">2</font> | **<font style="color:rgb(51, 51, 51);">Tab 点击切换</font>** | <font style="color:rgb(51, 51, 51);">先点"账单"→ 再点"统计"→ 再点"账单"</font> | <font style="color:rgb(51, 51, 51);">点击切换流畅无卡顿，页面内容对应切换（显示 "</font><font style="color:rgb(51, 51, 51);">📋</font><font style="color:rgb(51, 51, 51);"> 账单页" / "</font><font style="color:rgb(51, 51, 51);">📊</font><font style="color:rgb(51, 51, 51);"> 统计页"）</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ViewPagerAdapter.createFragment()</font>`<br/><font style="color:rgb(51, 51, 51);"> 的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">when</font>`<br/><font style="color:rgb(51, 51, 51);"> 分支是否写对</font> |
+| <font style="color:rgb(51, 51, 51);">3</font> | **<font style="color:rgb(51, 51, 51);">左右滑动切换</font>** | <font style="color:rgb(51, 51, 51);">在屏幕中间向右滑 → 向左滑</font> | <font style="color:rgb(51, 51, 51);">跟点击 Tab 效果完全一致，标签也同步高亮</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">TabLayoutMediator(...).attach()</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否调用</font> |
+| <font style="color:rgb(51, 51, 51);">4</font> | **<font style="color:rgb(51, 51, 51);">边缘至边缘适配</font>** | <font style="color:rgb(51, 51, 51);">观察顶部状态栏区域</font> | <font style="color:rgb(51, 51, 51);">内容不被状态栏遮挡，有正常的 padding 间距</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">enableEdgeToEdge()</font>`<br/><font style="color:rgb(51, 51, 51);"> + </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">setOnApplyWindowInsetsListener</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否写了</font> |
+
+
+---
+
+
+
+
+# <font style="color:rgb(51, 51, 51);">Task 2：</font><font style="color:rgb(51, 51, 51);">🎨</font><font style="color:rgb(51, 51, 51);"> 卡片魔法师 —— 打造精美记录列表</font>
+**<font style="color:rgb(119, 119, 119);">关键词</font>**<font style="color:rgb(119, 119, 119);">：RecyclerView、MaterialCardView、ViewBinding、假数据</font>**<font style="color:rgb(119, 119, 119);">今天结束时你能看到</font>**<font style="color:rgb(119, 119, 119);">：5 条精美的彩色卡片排成一列，右下角还有一个蓝色加号按钮</font>
+
+## <font style="color:rgb(51, 51, 51);">2.1 创建画图资源（10 分钟）</font>
+### <font style="color:rgb(51, 51, 51);">① </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/drawable/circle_bg_icon.xml</font>`<font style="color:rgb(51, 51, 51);">（圆形背景）</font>
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+  android:shape="oval">
+  <solid android:color="#999999" />
+</shape>
+```
+
+### <font style="color:rgb(51, 51, 51);">② </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/drawable/spinner_bg.xml</font>`<font style="color:rgb(51, 51, 51);">（下拉框边框）</font>
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+  <solid android:color="@android:color/white" />
+  <stroke android:width="1dp" android:color="#E0E0E0" />
+  <corners android:radius="8dp" />
+</shape>
+```
+
+### <font style="color:rgb(51, 51, 51);">③ </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/drawable/ic_add.xml</font>`<font style="color:rgb(51, 51, 51);">（加号图标）</font>
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+  android:width="24dp"
+  android:height="24dp"
+  android:viewportWidth="24"
+  android:viewportHeight="24">
+  <path
+    android:fillColor="#FFFFFF"
+    android:pathData="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+</vector>
+```
+
+## <font style="color:rgb(51, 51, 51);">2.2 设计单条卡片样子（15 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/layout/item_record.xml</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/card_record"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginHorizontal="12dp"
+  android:layout_marginVertical="4dp"
+  app:cardCornerRadius="12dp"
+  app:cardElevation="2dp"
+  app:cardUseCompatPadding="true"
+  app:contentPadding="12dp">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <!-- 左侧：分类圆形图标 -->
+    <TextView
+      android:id="@+id/tv_category_icon"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:background="@drawable/circle_bg_icon"
+      android:gravity="center"
+      android:textColor="@android:color/white"
+      android:textSize="16sp"
+      android:textStyle="bold"
+      tools:background="#FF6B6B"
+      tools:text="餐" />
+
+    <!-- 中间：名称 + 日期 + 备注 -->
+    <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="12dp"
+      android:layout_weight="1"
+      android:orientation="vertical">
+
+      <TextView
+        android:id="@+id/tv_category_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="餐饮" />
+
+      <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="#999999"
+        android:textSize="12sp"
+        tools:text="2025年05月24日" />
+
+      <TextView
+        android:id="@+id/tv_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="#666666"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:text="备注：午餐外卖"
+        tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <!-- 右侧：金额 -->
+    <TextView
+      android:id="@+id/tv_amount"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:textSize="16sp"
+      android:textStyle="bold"
+      tools:text="-35.50"
+      tools:textColor="#E74C3C" />
+
+  </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">MaterialCardView</font>`<font style="color:rgb(119, 119, 119);"> 自带圆角和阴影。</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">tools:text</font>`<font style="color:rgb(119, 119, 119);"> 是设计时预览文字，运行时不会显示。</font>
+
+## <font style="color:rgb(51, 51, 51);">2.3 画账单页整体布局（10 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/layout/fragment_bills.xml</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/bg_light"
+  tools:context=".ui.fragment.BillsFragment">
+
+  <!-- 标题 + 列表容器 -->
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 标题 -->
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="16dp"
+      android:text="@string/recent_records"
+      android:textColor="@android:color/black"
+      android:textSize="16sp"
+      android:textStyle="bold" />
+
+    <!-- RecyclerView：可滚动的列表，下方最近记录列表（待适配 ）-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_records"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        tools:listitem="@layout/item_record"/>
+  </LinearLayout>
+
+  <!-- 右下角悬浮加号按钮 -->
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/fab_add"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    android:layout_margin="16dp"
+    android:contentDescription="@string/add_record"
+    android:src="@drawable/ic_add"
+    app:fabSize="normal"
+    app:tint="@android:color/white" />
+
+</FrameLayout>
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">FrameLayout</font>`<font style="color:rgb(119, 119, 119);"> 是最简单的层叠容器，先放的内容在下层，后放的内容在上层。FAB 用 </font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">layout_gravity="bottom|end"</font>`<font style="color:rgb(119, 119, 119);"> 固定在右下角。</font>
+
+## <font style="color:rgb(51, 51, 51);">2.4 编写列表适配器 —— 用假数据"点亮"列表（25 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ui/adapter/RecordAdapter.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.adapter
+
+import android.graphics.Color
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import edu.guigu.accountbook.R
+import edu.guigu.accountbook.databinding.ItemRecordBinding
+
+/**
+* RecyclerView 适配器：把数据"画"到列表的每一行
+*
+* RecyclerView 工作原理（类比电影院）：
+* - Adapter    = 放映员（负责把数据画面放入每一帧）
+* - ViewHolder = 放映机（持有控件引用，复用不毁坏）
+* - LayoutManager = 座椅排列方式（Linear 纵向 / Grid 网格）
+*/
+class RecordAdapter : RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
+
+    // ===== 假数据（今天先用着，明天换真的） =====
+    data class FakeRecord(
+        val icon: String,      // 首字
+        val iconColor: Int,    // 背景色
+        val category: String,  // 分类
+        val date: String,      // 日期
+        val note: String?,     // 备注
+        val amount: String,    // 金额文字
+        val amountColor: Int   // 金额颜色
+    )
+
+    private val records = listOf(
+        FakeRecord("餐", 0xFFFF6B6B.toInt(), "餐饮", "2025年05月24日", "午餐外卖",
+             "-¥35.50", 0xFFE74C3C.toInt()),
+        FakeRecord("薪", 0xFF2ECC71.toInt(), "工资", "2025年05月15日", null,
+             "+¥8000.00", 0xFF2ECC71.toInt()),
+        FakeRecord("交", 0xFF4ECDC4.toInt(), "交通", "2025年05月23日", "地铁通勤",
+             "-¥12.00", 0xFFE74C3C.toInt()),
+        FakeRecord("购", 0xFF45B7D1.toInt(), "购物", "2025年05月22日", null,
+             "-¥258.00", 0xFFE74C3C.toInt()),
+        FakeRecord("娱", 0xFF96CEB4.toInt(), "娱乐", "2025年05月20日", "电影票",
+             "-¥79.90", 0xFFE74C3C.toInt()),
+    )
+
+    override fun getItemCount(): Int = records.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_record, parent, false)
+        return RecordViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
+        holder.bind(records[position])
+    }
+
+    inner class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val binding = ItemRecordBinding.bind(itemView)
+
+        fun bind(record: FakeRecord) {
+            binding.tvCategoryIcon.text = record.icon
+            binding.tvCategoryIcon.background.mutate()?.let { drawable ->
+                (drawable as? android.graphics.drawable.GradientDrawable)?.setColor(record.iconColor)
+            }
+
+            binding.tvCategoryName.text = record.category
+            binding.tvDate.text = record.date
+
+            if (record.note != null) {
+                binding.tvNote.text = "备注：${record.note}"
+                binding.tvNote.visibility = View.VISIBLE
+            } else {
+                binding.tvNote.visibility = View.GONE
+            }
+
+            binding.tvAmount.text = record.amount
+            binding.tvAmount.setTextColor(record.amountColor)
+        }
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：Adapter 就三个核心方法 —— </font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">getItemCount</font>`<font style="color:rgb(119, 119, 119);"> 告诉列表有多少条，</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">onCreateViewHolder</font>`<font style="color:rgb(119, 119, 119);"> 创建新卡片模板，</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">onBindViewHolder</font>`<font style="color:rgb(119, 119, 119);"> 把数据塞进卡片。</font>
+
+## <font style="color:rgb(51, 51, 51);">2.5 更新 BillsFragment 装上列表（15 分钟）</font>
+<font style="color:rgb(51, 51, 51);">替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import edu.guigu.accountbook.databinding.FragmentBillsBinding
+import edu.guigu.accountbook.ui.adapter.RecordAdapter
+
+class BillsFragment : Fragment() {
+
+    private var _binding: FragmentBillsBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+            ): View {
+        _binding = FragmentBillsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 设置 RecyclerView
+        binding.rvRecords.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvRecords.adapter = RecordAdapter()
+
+        // FAB 暂时弹提示，待完善
+        binding.fabAdd.setOnClickListener {
+            Toast.makeText(requireContext(), "暂时弹提示，待完善！", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null  // ★ 防止内存泄漏
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">_binding = null</font>`<font style="color:rgb(119, 119, 119);"> 是 Fragment + ViewBinding 的标准防泄漏写法，</font>**<font style="color:rgb(119, 119, 119);">以后每个 Fragment 都要这样写</font>**<font style="color:rgb(119, 119, 119);">。</font>
+
+## <font style="color:rgb(51, 51, 51);">2.6 运行测试（5 分钟）</font>
+<font style="color:rgb(51, 51, 51);">点击 </font><font style="color:rgb(51, 51, 51);">▶</font><font style="color:rgb(51, 51, 51);"> 运行。</font>
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ <font style="color:rgb(51, 51, 51);">账单页显示 5 条彩色卡片，有图标、名称、日期、金额</font>
++ <font style="color:rgb(51, 51, 51);">支出红色、收入绿色、部分有备注</font>
++ <font style="color:rgb(51, 51, 51);">右下角有一个蓝色加号按钮</font>
++ <font style="color:rgb(51, 51, 51);">统计页还是占位文字</font>
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">Day 2 成就解锁</font>**<font style="color:rgb(119, 119, 119);">：一套精美的卡片列表已在手机上展示！</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 2 检查清单</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/drawable/circle_bg_icon.xml</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">spinner_bg.xml</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ic_add.xml</font>`<font style="color:rgb(51, 51, 51);"> 三个文件已创建</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">item_record.xml</font>`<font style="color:rgb(51, 51, 51);"> 使用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">MaterialCardView</font>`<font style="color:rgb(51, 51, 51);">，包含左侧图标、中间名称/日期/备注、右侧金额</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">fragment_bills.xml</font>`<font style="color:rgb(51, 51, 51);"> 包含标题 TextView、RecyclerView、FloatingActionButton，正确使用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">FrameLayout</font>`<font style="color:rgb(51, 51, 51);"> 层叠</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordAdapter.kt</font>`<font style="color:rgb(51, 51, 51);"> 实现了 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onCreateViewHolder</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onBindViewHolder</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getItemCount</font>`
++ <font style="color:rgb(51, 51, 51);">假数据 5 条包含收入（绿色）和支出（红色）</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onBindViewHolder</font>`<font style="color:rgb(51, 51, 51);"> 中对有备注和无备注的记录分别处理 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">visibility</font>`
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 中设置了 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">layoutManager</font>`<font style="color:rgb(51, 51, 51);"> 并创建了 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">adapter</font>`
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onDestroyView()</font>`<font style="color:rgb(51, 51, 51);"> 中将 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">_binding</font>`<font style="color:rgb(51, 51, 51);"> 置为 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">null</font>`
++ <font style="color:rgb(51, 51, 51);">账单页显示 5 条彩色卡片，支出红/收入绿色分明</font>
++ <font style="color:rgb(51, 51, 51);">右下角蓝色加号按钮点击弹出 Toast "添加功能明日解锁！"</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 2 测试用例</font>
+<font style="color:rgb(119, 119, 119);">测试方法：每个用例独立执行，全部通过才算 Day 2 完成。</font>
+
+| **<font style="color:rgb(51, 51, 51);">#</font>** | **<font style="color:rgb(51, 51, 51);">测试场景</font>** | **<font style="color:rgb(51, 51, 51);">操作步骤</font>** | **<font style="color:rgb(51, 51, 51);">预期结果</font>** | **<font style="color:rgb(51, 51, 51);">不通过的排查方向</font>** |
+| :---: | :--- | :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">1</font> | **<font style="color:rgb(51, 51, 51);">列表显示</font>** | <font style="color:rgb(51, 51, 51);">打开 App，切换到账单 Tab</font> | <font style="color:rgb(51, 51, 51);">5 条卡片从上到下依次排列：餐饮、工资、交通、购物、娱乐</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordAdapter</font>`<br/><font style="color:rgb(51, 51, 51);"> 的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">records</font>`<br/><font style="color:rgb(51, 51, 51);"> 列表是否正确初始化 5 条数据</font> |
+| <font style="color:rgb(51, 51, 51);">2</font> | **<font style="color:rgb(51, 51, 51);">金额颜色</font>** | <font style="color:rgb(51, 51, 51);">观察所有卡片右侧金额</font> | <font style="color:rgb(51, 51, 51);">"工资"显示绿色 +¥8000.00；其余四张显示红色 -¥xx.xx</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">amountColor</font>`<br/><font style="color:rgb(51, 51, 51);"> 字段是否对应正确的颜色值</font> |
+| <font style="color:rgb(51, 51, 51);">3</font> | **<font style="color:rgb(51, 51, 51);">备注显隐</font>** | <font style="color:rgb(51, 51, 51);">对比"餐饮"和"购物"两张卡片</font> | <font style="color:rgb(51, 51, 51);">"餐饮"显示"备注：午餐外卖"，"购物"不显示备注行</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">tvNote.visibility</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否在无备注时设为 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">GONE</font>` |
+| <font style="color:rgb(51, 51, 51);">4</font> | **<font style="color:rgb(51, 51, 51);">FAB 按钮</font>** | <font style="color:rgb(51, 51, 51);">点击右下角蓝色 + 按钮</font> | <font style="color:rgb(51, 51, 51);">弹出 Toast："添加功能明日解锁！"</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">fabAdd.setOnClickListener</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否绑定了 Toast</font> |
+| <font style="color:rgb(51, 51, 51);">5</font> | **<font style="color:rgb(51, 51, 51);">FAB 层级</font>** | <font style="color:rgb(51, 51, 51);">滚动列表到底部</font> | <font style="color:rgb(51, 51, 51);">FAB 始终浮在列表上方，不被卡片遮挡</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">FrameLayout</font>`<br/><font style="color:rgb(51, 51, 51);"> 中 FAB 是否写在 RecyclerView 之后（后写=上层）</font> |
+| <font style="color:rgb(51, 51, 51);">6</font> | **<font style="color:rgb(51, 51, 51);">内存验证</font>** | <font style="color:rgb(51, 51, 51);">在账单和统计 Tab 之间快速切换 5 次</font> | <font style="color:rgb(51, 51, 51);">不卡顿、不崩溃</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">_binding = null</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否写在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onDestroyView()</font>`<br/><font style="color:rgb(51, 51, 51);"> 中</font> |
+
+
+
+
+
+
+# <font style="color:rgb(51, 51, 51);">Task 3：</font><font style="color:rgb(51, 51, 51);">💾</font><font style="color:rgb(51, 51, 51);"> 数据永动机 —— 让记录永久保存</font>
+**<font style="color:rgb(119, 119, 119);">关键词</font>**<font style="color:rgb(119, 119, 119);">：Room 数据库、Entity、DAO、ViewModel、LiveData</font>**<font style="color:rgb(119, 119, 119);">今天结束时你能看到</font>**<font style="color:rgb(119, 119, 119);">：列表变空了（因为还没有真实数据），但数据已从数据库读取——关闭 App 再打开，数据不会丢！</font>
+
+## <font style="color:rgb(51, 51, 51);">3.1 理解今天的任务（5 分钟）</font>
+<font style="color:rgb(51, 51, 51);">今天新建 4 个文件，搭建数据流水线：</font>
+
+```plain
+Record（模型） → RecordDao（操作接口） → AppDatabase（数据库）
+                                              ↓
+                                    RecordRepository（仓库）
+                                              ↓
+                                    RecordViewModel（管家）
+                                              ↓
+                                    BillsFragment（界面）
+```
+
+<font style="color:rgb(119, 119, 119);">类比：你要存钱 → 填存款单（Record）→ 柜员操作（DAO）→ 存入金库（Database）→ 会计记账（Repository）→ 管家告诉你余额（ViewModel）→ 你看到余额变化（Fragment）</font>
+
+## <font style="color:rgb(51, 51, 51);">3.2 创建数据模型 Record（15 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">data/model/Record.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.data.model
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "records")
+data class Record(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+
+    @ColumnInfo(name = "type")
+    val type: Int,                // 0=支出, 1=收入
+
+    @ColumnInfo(name = "category")
+    val category: String,         // 分类名
+
+    @ColumnInfo(name = "amount")
+    val amount: Double,           // 金额
+
+    @ColumnInfo(name = "note")
+    val note: String? = null,     // 备注
+
+    @ColumnInfo(name = "date")
+    val date: Long                // 时间戳
+) {
+    companion object {
+        const val TYPE_EXPENSE = 0
+        const val TYPE_INCOME = 1
+
+        val EXPENSE_CATEGORIES = listOf(
+            "餐饮" to 0xFFFF6B6B.toInt(),
+            "交通" to 0xFF4ECDC4.toInt(),
+            "购物" to 0xFF45B7D1.toInt(),
+            "娱乐" to 0xFF96CEB4.toInt(),
+            "住房" to 0xFFFFEAA7.toInt(),
+            "医疗" to 0xFFDDA0DD.toInt(),
+            "教育" to 0xFF98D8C8.toInt(),
+            "其他" to 0xFFBBBBBB.toInt()
+        )
+
+        val INCOME_CATEGORIES = listOf(
+            "工资" to 0xFF2ECC71.toInt(),
+            "兼职" to 0xFF3498DB.toInt(),
+            "理财" to 0xFFF39C12.toInt(),
+            "红包" to 0xFFE74C3C.toInt(),
+            "其他" to 0xFF95A5A6.toInt()
+        )
+
+        fun getCategoriesByType(type: Int): List<String> {
+            return if (type == TYPE_EXPENSE) EXPENSE_CATEGORIES.map { it.first }
+            else INCOME_CATEGORIES.map { it.first }
+        }
+
+        fun getCategoryColor(category: String): Int {
+            return (EXPENSE_CATEGORIES + INCOME_CATEGORIES)
+                .find { it.first == category }?.second ?: 0xFF999999.toInt()
+        }
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">@Entity</font>`<font style="color:rgb(119, 119, 119);"> 告诉 Room 这是一个数据库表。</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">@PrimaryKey(autoGenerate = true)</font>`<font style="color:rgb(119, 119, 119);"> 表示 id 自动递增。</font>
+
+## <font style="color:rgb(51, 51, 51);">3.3 创建日期工具 DateUtils（10 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">util/DateUtils.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.util
+
+import java.text.SimpleDateFormat
+import java.util.*
+
+object DateUtils {
+
+    private const val DATE_PATTERN = "yyyy年MM月dd日"
+
+    /** 时间戳 → "2025年05月24日" */
+    fun formatDate(timestamp: Long): String {
+        val sdf = SimpleDateFormat(DATE_PATTERN, Locale.CHINA)
+        return sdf.format(Date(timestamp))
+    }
+
+    /** 金额 → "1234.50"（保留两位小数） */
+    fun formatAmount(amount: Double): String {
+        return String.format(Locale.CHINA, "%.2f", amount)
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">object</font>`<font style="color:rgb(119, 119, 119);"> 就是单例，直接 </font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">DateUtils.formatDate(...)</font>`<font style="color:rgb(119, 119, 119);"> 调用，不用 new。</font>
+
+## <font style="color:rgb(51, 51, 51);">3.4 创建数据库操作接口 RecordDao（15 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">data/dao/RecordDao.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.data.dao
+
+import androidx.room.*
+import edu.guigu.accountbook.data.model.Record
+
+/** 分类汇总数据（用于饼图） */
+data class CategorySummary(
+    val category: String,
+    val total: Double
+)
+
+@Dao
+interface RecordDao {
+
+    // ===== 查询 =====
+
+    @Query("SELECT * FROM records ORDER BY date DESC")
+    suspend fun getAllRecords(): List<Record>
+
+    @Query("SELECT SUM(amount) FROM records WHERE type = ${Record.TYPE_INCOME}")
+    suspend fun getTotalIncome(): Double?
+
+    @Query("SELECT SUM(amount) FROM records WHERE type = ${Record.TYPE_EXPENSE}")
+    suspend fun getTotalExpense(): Double?
+
+    @Query("SELECT * FROM records WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
+    suspend fun getRecordsByDateRange(startDate: Long, endDate: Long): List<Record>
+
+    @Query("SELECT category, SUM(amount) AS total FROM records WHERE type = :type GROUP BY category ORDER BY total DESC")
+    suspend fun getCategorySummary(type: Int): List<CategorySummary>
+
+    // ===== 增删改 =====
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(record: Record): Long
+
+    @Update
+    suspend fun update(record: Record)
+
+    @Delete
+    suspend fun delete(record: Record)
+
+    @Query("DELETE FROM records WHERE id = :id")
+    suspend fun deleteById(id: Long)
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：所有方法都是 </font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">suspend</font>`<font style="color:rgb(119, 119, 119);"> 函数，在后台线程执行不卡界面。Room 编译时自动实现这些方法。</font>
+
+## <font style="color:rgb(51, 51, 51);">3.5 创建数据库管理器 AppDatabase（10 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">data/database/AppDatabase.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.data.database
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import edu.guigu.accountbook.data.dao.RecordDao
+import edu.guigu.accountbook.data.model.Record
+
+@Database(entities = [Record::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun recordDao(): RecordDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getInstance(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "account_book.db"
+                ).fallbackToDestructiveMigration().build().also { INSTANCE = it }
+            }
+        }
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：单例模式 + 双重检查锁 = 整个 App 只有一个数据库连接。</font>
+
+## <font style="color:rgb(51, 51, 51);">3.6 创建数据仓库 RecordRepository（10 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">data/repository/RecordRepository.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.data.repository
+
+import edu.guigu.accountbook.data.dao.CategorySummary
+import edu.guigu.accountbook.data.dao.RecordDao
+import edu.guigu.accountbook.data.model.Record
+
+class RecordRepository(private val dao: RecordDao) {
+
+    suspend fun getAllRecords(): List<Record> = dao.getAllRecords()
+    suspend fun getTotalIncome(): Double? = dao.getTotalIncome()
+    suspend fun getTotalExpense(): Double? = dao.getTotalExpense()
+    suspend fun getCategorySummary(type: Int): List<CategorySummary> = dao.getCategorySummary(type)
+
+    suspend fun insert(record: Record): Long = dao.insert(record)
+    suspend fun update(record: Record) = dao.update(record)
+    suspend fun delete(record: Record) = dao.delete(record)
+    suspend fun deleteById(id: Long) = dao.deleteById(id)
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：Repository 是 ViewModel 和 DAO 之间的中间层，以后接入网络请求只需改这里。</font>
+
+## <font style="color:rgb(51, 51, 51);">3.7 创建 RecordViewModel（20 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ui/viewmodel/RecordViewModel.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.viewmodel
+
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import edu.guigu.accountbook.data.dao.CategorySummary
+import edu.guigu.accountbook.data.database.AppDatabase
+import edu.guigu.accountbook.data.model.Record
+import edu.guigu.accountbook.data.repository.RecordRepository
+import kotlinx.coroutines.launch
+
+class RecordViewModel(application: Application) : AndroidViewModel(application) {
+
+    // 数据层对象
+    private val repository: RecordRepository
+    `
+    // 内部可修改，外部只读
+    private val _allRecords = MutableLiveData<List<Record>>(emptyList())
+    val allRecords: LiveData<List<Record>> get() = _allRecords
+
+    private val _totalIncome = MutableLiveData(0.0)
+    val totalIncome: LiveData<Double> get() = _totalIncome
+
+    private val _totalExpense = MutableLiveData(0.0)
+    val totalExpense: LiveData<Double> get() = _totalExpense
+
+    // 支出分类汇总（给饼图用，Day 5 和进阶 X1 会用到）
+    private val _expenseCategorySummary = MutableLiveData<List<CategorySummary>>(emptyList())
+    val expenseCategorySummary: LiveData<List<CategorySummary>> get() = _expenseCategorySummary
+
+    init {
+        val dao = AppDatabase.getInstance(application).recordDao()
+        repository = RecordRepository(dao)
+        refreshData()
+    }
+
+    // 获取数据业务
+    private fun refreshData() {
+        // 启动协程
+        viewModelScope.launch {
+            // 到数据层获取数据，转为状态数据LiveData
+            _allRecords.postValue(repository.getAllRecords())
+            _totalIncome.postValue(repository.getTotalIncome() ?: 0.0)
+            _totalExpense.postValue(repository.getTotalExpense() ?: 0.0)
+            _expenseCategorySummary.postValue(repository.getCategorySummary(Record.TYPE_EXPENSE))
+        }
+    }
+
+    // 添加数据业务
+    fun insert(record: Record) {
+        viewModelScope.launch {
+            repository.insert(record)
+            refreshData()
+        }
+    }
+
+    // 更新数据业务
+    fun update(record: Record) {
+        viewModelScope.launch {
+            repository.update(record)
+            refreshData()
+        }
+    }
+
+    // 删除数据业务
+    fun delete(record: Record) {
+        viewModelScope.launch {
+            repository.delete(record)
+            refreshData()
+        }
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">_allRecords</font>`<font style="color:rgb(119, 119, 119);"> 私有可变，</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">allRecords</font>`<font style="color:rgb(119, 119, 119);"> 公开只读——就像银行柜台，外面不能直接碰钱，必须通过 insert/update/delete 方法。增删改后自动调 </font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">refreshData()</font>`<font style="color:rgb(119, 119, 119);">。</font>
+
+## <font style="color:rgb(51, 51, 51);">3.8 改造 RecordAdapter 接入真实数据（15 分钟）</font>
+<font style="color:rgb(51, 51, 51);">替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ui/adapter/RecordAdapter.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.adapter
+
+import android.graphics.Color
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import edu.guigu.accountbook.R
+import edu.guigu.accountbook.data.model.Record
+import edu.guigu.accountbook.databinding.ItemRecordBinding
+import edu.guigu.accountbook.util.DateUtils
+
+class RecordAdapter(
+    private val onItemClick: (Record) -> Unit,
+    private val onItemLongClick: (Record) -> Unit
+) : RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
+
+    private val records = mutableListOf<Record>()
+
+    fun updateRecords(newRecords: List<Record>) {
+        records.clear()
+        records.addAll(newRecords)
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int = records.size
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_record, parent, false)
+        return RecordViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
+        holder.bind(records[position])
+    }
+
+    inner class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val binding = ItemRecordBinding.bind(itemView)
+
+        fun bind(record: Record) {
+            val color = Record.getCategoryColor(record.category)
+
+            binding.tvCategoryIcon.text = record.category.first().toString()
+            (binding.tvCategoryIcon.background.mutate() as? android.graphics.drawable.GradientDrawable)
+            ?.setColor(color)
+
+            binding.tvCategoryName.text = record.category
+            binding.tvDate.text = DateUtils.formatDate(record.date)
+
+            if (!record.note.isNullOrBlank()) {
+                binding.tvNote.text = "备注：${record.note}"
+                binding.tvNote.visibility = View.VISIBLE
+            } else {
+                binding.tvNote.visibility = View.GONE
+            }
+
+            val isIncome = record.type == Record.TYPE_INCOME
+            val prefix = if (isIncome) "+" else "-"
+            binding.tvAmount.text = "${prefix}¥${DateUtils.formatAmount(record.amount)}"
+            binding.tvAmount.setTextColor(Color.parseColor(if (isIncome) "#2ECC71" else "#E74C3C"))
+
+            itemView.setOnClickListener { onItemClick(record) }
+            itemView.setOnLongClickListener { onItemLongClick(record); true }
+        }
+    }
+}
+```
+
+## <font style="color:rgb(51, 51, 51);">3.9 更新 BillsFragment 接入 ViewModel（15 分钟）</font>
+<font style="color:rgb(51, 51, 51);">替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import edu.guigu.accountbook.databinding.FragmentBillsBinding
+import edu.guigu.accountbook.ui.adapter.RecordAdapter
+import edu.guigu.accountbook.ui.viewmodel.RecordViewModel
+
+class BillsFragment : Fragment() {
+
+    private var _binding: FragmentBillsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var viewModel: RecordViewModel
+    private lateinit var adapter: RecordAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+            ): View {
+        _binding = FragmentBillsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(requireActivity())[RecordViewModel::class.java]
+
+        adapter = RecordAdapter(
+            onItemClick = { /* 明天实现编辑 */ },
+            onItemLongClick = { /* 明天实现删除 */ }
+        )
+        binding.rvRecords.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvRecords.adapter = adapter
+
+        viewModel.allRecords.observe(viewLifecycleOwner) { records ->
+            adapter.updateRecords(records)
+        }
+
+        binding.fabAdd.setOnClickListener {
+            Toast.makeText(requireContext(), "添加功能明日解锁！", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">ViewModelProvider(requireActivity())</font>`<font style="color:rgb(119, 119, 119);"> 确保账单页和统计页</font>**<font style="color:rgb(119, 119, 119);">共享同一个 ViewModel</font>**<font style="color:rgb(119, 119, 119);">，数据改动两边同步。</font>
+
+## <font style="color:rgb(51, 51, 51);">3.10 运行测试（5 分钟）</font>
+<font style="color:rgb(51, 51, 51);">点击 </font><font style="color:rgb(51, 51, 51);">▶</font><font style="color:rgb(51, 51, 51);"> 运行。</font>
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ <font style="color:rgb(51, 51, 51);">账单页列表</font>**<font style="color:rgb(51, 51, 51);">变成空的了</font>**<font style="color:rgb(51, 51, 51);">！</font>
++ <font style="color:rgb(51, 51, 51);">数据不再来自假数据，而是从 Room 数据库读取的（只是还没插入过数据）</font>
++ <font style="color:rgb(51, 51, 51);">关闭 App 重新打开，一切正常</font>
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">Day 3 成就解锁</font>**<font style="color:rgb(119, 119, 119);">：完整的数据层搭建完成，数据从未丢失！</font>
+
+<font style="color:rgb(119, 119, 119);">💡</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">为什么列表变空了？</font>**<font style="color:rgb(119, 119, 119);"> 不是出了问题，而是升级了！假数据退休了，现在列表从 Room 数据库读取真实数据。因为还没往数据库里存过东西，所以是空的——就像新买的记账本，第一页当然是空白的。明天我们就来"写第一笔账"！</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 3 检查清单</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">Record.kt</font>`<font style="color:rgb(51, 51, 51);"> 定义了 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">@Entity</font>`<font style="color:rgb(51, 51, 51);">，包含 id/type/category/amount/note/date 字段</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">Record.kt</font>`<font style="color:rgb(51, 51, 51);"> 的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">companion object</font>`<font style="color:rgb(51, 51, 51);"> 中定义了 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">TYPE_EXPENSE</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">TYPE_INCOME</font>`<font style="color:rgb(51, 51, 51);">、分类列表和颜色映射</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">DateUtils.kt</font>`<font style="color:rgb(51, 51, 51);"> 能正确格式化时间戳和金额</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordDao.kt</font>`<font style="color:rgb(51, 51, 51);"> 定义了 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">@Dao</font>`<font style="color:rgb(51, 51, 51);"> 接口：</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getAllRecords()</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getTotalIncome()</font>`<font style="color:rgb(51, 51, 51);">、</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getTotalExpense()</font>`<font style="color:rgb(51, 51, 51);">、增删改方法等——全部为 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">suspend</font>`<font style="color:rgb(51, 51, 51);"> 函数</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">CategorySummary</font>`<font style="color:rgb(51, 51, 51);"> 数据类已创建（在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordDao.kt</font>`<font style="color:rgb(51, 51, 51);"> 或独立文件中）</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">AppDatabase.kt</font>`<font style="color:rgb(51, 51, 51);"> 单例模式正确，</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getInstance()</font>`<font style="color:rgb(51, 51, 51);"> 用双重检查锁</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordRepository.kt</font>`<font style="color:rgb(51, 51, 51);"> 正确封装 DAO 方法</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordViewModel.kt</font>`<font style="color:rgb(51, 51, 51);"> 使用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">AndroidViewModel</font>`<font style="color:rgb(51, 51, 51);">，通过 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">viewModelScope.launch</font>`<font style="color:rgb(51, 51, 51);"> 执行数据库操作</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordViewModel.kt</font>`<font style="color:rgb(51, 51, 51);"> 中 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">_allRecords</font>`<font style="color:rgb(51, 51, 51);"> 等变量使用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">_xxx</font>`<font style="color:rgb(51, 51, 51);"> 私有 + </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">xxx</font>`<font style="color:rgb(51, 51, 51);"> 公开的 LiveData 双胞胎模式</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordViewModel.kt</font>`<font style="color:rgb(51, 51, 51);"> 中 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">refreshData()</font>`<font style="color:rgb(51, 51, 51);"> 包含 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">expenseCategorySummary</font>`<font style="color:rgb(51, 51, 51);"> 的加载（为 Day 5 统计页和 X1 饼图做准备）</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordAdapter.kt</font>`<font style="color:rgb(51, 51, 51);"> 替换为接收 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">List<Record></font>`<font style="color:rgb(51, 51, 51);"> 的版本，不再使用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">FakeRecord</font>`
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 通过 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ViewModelProvider(requireActivity())</font>`<font style="color:rgb(51, 51, 51);"> 获取 ViewModel</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 中 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">observe</font>`<font style="color:rgb(51, 51, 51);"> 用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">viewLifecycleOwner</font>`
++ <font style="color:rgb(51, 51, 51);">App 编译运行后账单页列表显示为空（因为尚无真实数据）</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 3 测试用例</font>
+<font style="color:rgb(119, 119, 119);">测试方法：每个用例独立执行，全部通过才算 Day 3 完成。</font>
+
+| **<font style="color:rgb(51, 51, 51);">#</font>** | **<font style="color:rgb(51, 51, 51);">测试场景</font>** | **<font style="color:rgb(51, 51, 51);">操作步骤</font>** | **<font style="color:rgb(51, 51, 51);">预期结果</font>** | **<font style="color:rgb(51, 51, 51);">不通过的排查方向</font>** |
+| :---: | :--- | :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">1</font> | **<font style="color:rgb(51, 51, 51);">空列表</font>** | <font style="color:rgb(51, 51, 51);">打开 App → 账单页</font> | <font style="color:rgb(51, 51, 51);">列表为空（因为 Room 数据库尚无数据），不显示假数据卡片</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordAdapter</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否已替换为接收 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">Record</font>`<br/><font style="color:rgb(51, 51, 51);"> 而非 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">FakeRecord</font>` |
+| <font style="color:rgb(51, 51, 51);">2</font> | **<font style="color:rgb(51, 51, 51);">双击不崩溃</font>** | <font style="color:rgb(51, 51, 51);">快速连续点击账单/统计 Tab 5 次</font> | <font style="color:rgb(51, 51, 51);">不崩溃、不 ANR</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">viewLifecycleOwner</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否正确使用</font> |
+| <font style="color:rgb(51, 51, 51);">3</font> | **<font style="color:rgb(51, 51, 51);">数据库文件存在</font>** | <font style="color:rgb(51, 51, 51);">用 Device Explorer 查看 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">/data/data/edu.guigu.accountbook/databases/</font>` | <font style="color:rgb(51, 51, 51);">存在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">account_book.db</font>`<br/><font style="color:rgb(51, 51, 51);"> 文件</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">AppDatabase.getInstance()</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否在 ViewModel init 中被调用</font> |
+| <font style="color:rgb(51, 51, 51);">4</font> | **<font style="color:rgb(51, 51, 51);">编译验证</font>** | <font style="color:rgb(51, 51, 51);">执行 Build → Clean Project 后重新 Build</font> | <font style="color:rgb(51, 51, 51);">编译成功，没有 "Cannot find implementation" 错误</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ksp</font>`<br/><font style="color:rgb(51, 51, 51);"> 插件是否正确配置；DAO 的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">@Query</font>`<br/><font style="color:rgb(51, 51, 51);"> 语法是否正确</font> |
+| <font style="color:rgb(51, 51, 51);">5</font> | **<font style="color:rgb(51, 51, 51);">类型安全</font>** | <font style="color:rgb(51, 51, 51);">检查 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordViewModel.kt</font>`<br/><font style="color:rgb(51, 51, 51);"> 中 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getTotalIncome()</font>`<br/><font style="color:rgb(51, 51, 51);"> 返回 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">null</font>`<br/><font style="color:rgb(51, 51, 51);"> 的处理</font> | <font style="color:rgb(51, 51, 51);">代码中有 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">?: 0.0</font>`<br/><font style="color:rgb(51, 51, 51);"> 或类似的 null 处理</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getTotalIncome()</font>`<br/><font style="color:rgb(51, 51, 51);"> 返回 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">Double?</font>`<br/><font style="color:rgb(51, 51, 51);">，在赋值给 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">MutableLiveData(0.0)</font>`<br/><font style="color:rgb(51, 51, 51);"> 前必须处理 null</font> |
+
+
+
+
+
+# <font style="color:rgb(51, 51, 51);">Task 4：</font><font style="color:rgb(51, 51, 51);">✋</font><font style="color:rgb(51, 51, 51);"> 指尖操控术 —— 增删改查一气呵成</font>
+**<font style="color:rgb(119, 119, 119);">关键词</font>**<font style="color:rgb(119, 119, 119);">：BottomSheetDialog、Spinner、DatePicker、输入校验</font>**<font style="color:rgb(119, 119, 119);">今天结束时你能看到</font>**<font style="color:rgb(119, 119, 119);">：完整的记账本！能添加、编辑、删除记录，数据实时保存。</font>
+
+## <font style="color:rgb(51, 51, 51);">4.1 画弹窗布局（20 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/layout/dialog_add_edit_record.xml</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:fillViewport="true">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="24dp">
+
+    <!-- 标题 -->
+    <TextView
+      android:id="@+id/tv_dialog_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:text="添加记录"
+      android:textColor="@android:color/black"
+      android:textSize="18sp"
+      android:textStyle="bold" />
+
+    <View android:layout_width="match_parent" android:layout_height="16dp" />
+
+    <!-- 类型选择（Spinner） -->
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+      android:text="类型" android:textColor="#666666" android:textSize="13sp" />
+
+    <Spinner
+      android:id="@+id/spinner_type"
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      android:layout_marginTop="4dp"
+      android:entries="@array/record_types"
+      android:background="@drawable/spinner_bg" />
+
+    <!-- 分类选择（动态更新） -->
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:text="分类" android:textColor="#666666" android:textSize="13sp" />
+
+    <Spinner
+      android:id="@+id/spinner_category"
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      android:layout_marginTop="4dp"
+      android:background="@drawable/spinner_bg" />
+
+    <!-- 金额输入 -->
+    <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/til_amount"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:hint="金额（元）"
+      app:counterEnabled="false"
+      style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+      <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/et_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 备注输入 -->
+    <com.google.android.material.textfield.TextInputLayout
+      android:id="@+id/til_note"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="备注（选填）"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:maxLines="3" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- 日期选择 -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="日期" android:textColor="#666666" android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_selected_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_pick_date"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择日期" />
+        </LinearLayout>
+
+        <!-- 间距 -->
+        <View android:layout_width="match_parent" android:layout_height="0dp"
+            android:layout_weight="1" android:minHeight="16dp" />
+
+        <!-- 取消 / 保存 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="@string/cancel" />
+
+            <Button
+                android:id="@+id/btn_save"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="@string/save" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+```
+
+## <font style="color:rgb(51, 51, 51);">4.2 编写弹窗逻辑——添加和编辑共用（30 分钟）</font>
+<font style="color:rgb(51, 51, 51);">创建 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ui/dialog/AddEditRecordDialog.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.dialog
+
+import android.app.DatePickerDialog
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import edu.guigu.accountbook.data.model.Record
+import edu.guigu.accountbook.databinding.DialogAddEditRecordBinding
+import edu.guigu.accountbook.util.DateUtils
+import java.util.*
+
+class AddEditRecordDialog(
+    private val editRecord: Record? = null,  // null=添加, 有值=编辑
+    private val onSave: (Record) -> Unit
+) : BottomSheetDialogFragment() {
+
+    private var _binding: DialogAddEditRecordBinding? = null
+    private val binding get() = _binding!!
+    private var selectedDate: Long = System.currentTimeMillis()
+    private var selectedType: Int = Record.TYPE_EXPENSE
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = DialogAddEditRecordBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupMode()
+        setupListeners()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupMode() {
+        if (editRecord != null) {
+            // 编辑模式：回填已有数据
+            binding.tvDialogTitle.text = "编辑记录"
+            selectedType = editRecord.type
+            binding.spinnerType.setSelection(selectedType)
+            updateCategorySpinner(selectedType)
+            val index = Record.getCategoriesByType(selectedType).indexOf(editRecord.category)
+            if (index >= 0) binding.spinnerCategory.setSelection(index)
+            binding.etAmount.setText(DateUtils.formatAmount(editRecord.amount))
+            if (!editRecord.note.isNullOrBlank()) binding.etNote.setText(editRecord.note)
+            selectedDate = editRecord.date
+            binding.tvSelectedDate.text = DateUtils.formatDate(selectedDate)
+        } else {
+            // 添加模式：默认值
+            binding.tvDialogTitle.text = "添加记录"
+            binding.spinnerType.setSelection(0)
+            updateCategorySpinner(Record.TYPE_EXPENSE)
+            selectedDate = System.currentTimeMillis()
+            binding.tvSelectedDate.text = DateUtils.formatDate(selectedDate)
+        }
+    }
+
+    private fun setupListeners() {
+        // 类型切换 → 联动分类列表
+        binding.spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedType = position
+                updateCategorySpinner(selectedType)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        binding.btnPickDate.setOnClickListener { showDatePicker() }
+        binding.btnCancel.setOnClickListener { dismiss() }
+        binding.btnSave.setOnClickListener { saveRecord() }
+    }
+
+    private fun updateCategorySpinner(type: Int) {
+        val categories = Record.getCategoriesByType(type)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            categories
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerCategory.adapter = adapter
+    }
+
+    private fun showDatePicker() {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = selectedDate
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                cal.set(year, month, day, 12, 0, 0)
+                cal.set(Calendar.MILLISECOND, 0)
+                selectedDate = cal.timeInMillis
+                binding.tvSelectedDate.text = DateUtils.formatDate(selectedDate)
+            },
+            cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    private fun saveRecord() {
+        // 校验金额
+        val amountStr = binding.etAmount.text?.toString()?.trim()
+        if (amountStr.isNullOrBlank()) {
+            binding.etAmount.error = "请输入金额"
+            return
+        }
+        val amount = amountStr.toDoubleOrNull()
+        if (amount == null || amount <= 0) {
+            binding.etAmount.error = "请输入有效的金额"
+            return
+        }
+        val category = binding.spinnerCategory.selectedItem?.toString() ?: "其他"
+        val note = binding.etNote.text?.toString()?.trim()?.takeIf { it.isNotBlank() }
+
+        val record = Record(
+            id = editRecord?.id ?: 0,
+            type = selectedType,
+            category = category,
+            amount = amount,
+            note = note,
+            date = selectedDate
+        )
+        onSave(record)
+        dismiss()
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">解读：同一个弹窗支持添加和编辑两种模式，</font>`<font style="color:rgb(119, 119, 119);background-color:rgb(243, 244, 244);">editRecord != null</font>`<font style="color:rgb(119, 119, 119);"> 时回填已有数据。类型切换时自动更新分类列表。</font>
+
+## <font style="color:rgb(51, 51, 51);">4.3 完善 BillsFragment——接入完整的增删改（20 分钟）</font>
+<font style="color:rgb(51, 51, 51);">替换 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment.kt</font>`<font style="color:rgb(51, 51, 51);">：</font>
+
+```kotlin
+package edu.guigu.accountbook.ui.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import edu.guigu.accountbook.data.model.Record
+import edu.guigu.accountbook.databinding.FragmentBillsBinding
+import edu.guigu.accountbook.ui.adapter.RecordAdapter
+import edu.guigu.accountbook.ui.dialog.AddEditRecordDialog
+import edu.guigu.accountbook.ui.viewmodel.RecordViewModel
+import edu.guigu.accountbook.util.DateUtils
+
+class BillsFragment : Fragment() {
+
+    private var _binding: FragmentBillsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var viewModel: RecordViewModel
+    private lateinit var adapter: RecordAdapter
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentBillsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(requireActivity())[RecordViewModel::class.java]
+
+        adapter = RecordAdapter(
+            onItemClick = { record -> showEditDialog(record) },
+            onItemLongClick = { record -> showDeleteConfirmDialog(record) }
+        )
+        binding.rvRecords.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvRecords.adapter = adapter
+
+        viewModel.allRecords.observe(viewLifecycleOwner) { records ->
+            adapter.updateRecords(records)
+        }
+
+        binding.fabAdd.setOnClickListener { showAddDialog() }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    /** 弹出添加弹窗 */
+    private fun showAddDialog() {
+        AddEditRecordDialog(
+            editRecord = null,
+            onSave = { record ->
+                viewModel.insert(record)
+                Toast.makeText(requireContext(), "记录已添加", Toast.LENGTH_SHORT).show()
+            }
+        ).show(parentFragmentManager, "AddEditDialog")
+    }
+
+    /** 弹出编辑弹窗 */
+    private fun showEditDialog(record: Record) {
+        AddEditRecordDialog(
+            editRecord = record,
+            onSave = { updatedRecord ->
+                viewModel.update(updatedRecord)
+                Toast.makeText(requireContext(), "记录已更新", Toast.LENGTH_SHORT).show()
+            }
+        ).show(parentFragmentManager, "AddEditDialog")
+    }
+
+    /** 删除确认对话框 */
+    private fun showDeleteConfirmDialog(record: Record) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("删除确认")
+            .setMessage("确定要删除「${record.category}」的这条记录吗？\n金额：¥${DateUtils.formatAmount(record.amount)}")
+            .setPositiveButton("删除") { _, _ ->
+                viewModel.delete(record)
+                Toast.makeText(requireContext(), "记录已删除", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("取消", null)
+            .show()
+    }
+}
+```
+
+## <font style="color:rgb(51, 51, 51);">4.4 运行测试（10 分钟）</font>
+<font style="color:rgb(51, 51, 51);">点击 </font><font style="color:rgb(51, 51, 51);">▶</font><font style="color:rgb(51, 51, 51);"> 运行，试试以下操作：</font>
+
+1. **<font style="color:rgb(51, 51, 51);">添加记录</font>**<font style="color:rgb(51, 51, 51);">：点右下角 + → 选类型 → 选分类 → 输入金额 → 保存</font>
+2. **<font style="color:rgb(51, 51, 51);">编辑记录</font>**<font style="color:rgb(51, 51, 51);">：点击任意卡片 → 修改金额 → 保存</font>
+3. **<font style="color:rgb(51, 51, 51);">删除记录</font>**<font style="color:rgb(51, 51, 51);">：长按任意卡片 → 点"删除"</font>
+4. **<font style="color:rgb(51, 51, 51);">关闭 App 重新打开</font>**<font style="color:rgb(51, 51, 51);"> → 数据还在！</font>
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ <font style="color:rgb(51, 51, 51);">添加后列表中出现新卡片，金额颜色取决于收支类型</font>
++ <font style="color:rgb(51, 51, 51);">编辑后卡片内容实时更新</font>
++ <font style="color:rgb(51, 51, 51);">删除后有确认弹窗，确认后卡片消失</font>
++ <font style="color:rgb(51, 51, 51);">关闭重开，数据不丢</font>
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">Day 4 成就解锁</font>**<font style="color:rgb(119, 119, 119);">：完整的记账本功能已完成！增删改查全部到位。</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 4 检查清单</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">dialog_add_edit_record.xml</font>`<font style="color:rgb(51, 51, 51);"> 已创建，包含类型 Spinner、分类 Spinner、金额输入、备注输入、日期选择器、取消/保存按钮</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">AddEditRecordDialog.kt</font>`<font style="color:rgb(51, 51, 51);"> 继承 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BottomSheetDialogFragment</font>`<font style="color:rgb(51, 51, 51);">，构造函数接收 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">editRecord</font>`<font style="color:rgb(51, 51, 51);"> 和 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onSave</font>`
++ <font style="color:rgb(51, 51, 51);">编辑模式（</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">editRecord != null</font>`<font style="color:rgb(51, 51, 51);">）正确回填已有数据到各控件</font>
++ <font style="color:rgb(51, 51, 51);">类型 Spinner 切换时，分类 Spinner 的内容自动切换到对应的支出/收入分类列表</font>
++ <font style="color:rgb(51, 51, 51);">日期选择通过 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">DatePickerDialog</font>`<font style="color:rgb(51, 51, 51);"> 实现，选中后更新 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">tvSelectedDate</font>`
++ <font style="color:rgb(51, 51, 51);">保存时进行输入校验：金额不能为空、必须大于 0</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">BillsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 中 FAB 点击弹出添加弹窗，卡片点击弹出编辑弹窗，长按弹出删除确认对话框</font>
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">AddEditRecordDialog</font>`<font style="color:rgb(51, 51, 51);"> 中也有 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">_binding = null</font>`<font style="color:rgb(51, 51, 51);"> 的防泄漏写法</font>
++ <font style="color:rgb(51, 51, 51);">添加记录后列表立即显示新记录</font>
++ <font style="color:rgb(51, 51, 51);">编辑记录后列表立即更新</font>
++ <font style="color:rgb(51, 51, 51);">删除记录后列表立即移除该记录</font>
++ <font style="color:rgb(51, 51, 51);">关闭 App 再打开，数据仍然存在</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">Day 4 测试用例</font>
+<font style="color:rgb(119, 119, 119);">测试方法：每个用例独立执行，全部通过才算 Day 4 完成。</font>
+
+| **<font style="color:rgb(51, 51, 51);">#</font>** | **<font style="color:rgb(51, 51, 51);">测试场景</font>** | **<font style="color:rgb(51, 51, 51);">操作步骤</font>** | **<font style="color:rgb(51, 51, 51);">预期结果</font>** | **<font style="color:rgb(51, 51, 51);">不通过的排查方向</font>** |
+| :---: | :--- | :--- | :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">1</font> | **<font style="color:rgb(51, 51, 51);">添加支出记录</font>** | <font style="color:rgb(51, 51, 51);">FAB → 类型选"支出" → 分类选"餐饮" → 金额填"35.50" → 备注填"午餐外卖" → 保存</font> | <font style="color:rgb(51, 51, 51);">弹窗关闭，列表出现"餐饮 -¥35.50"的红色卡片，备注显示"午餐外卖"</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onSave</font>`<br/><font style="color:rgb(51, 51, 51);"> 回调是否正确调用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">viewModel.insert()</font>`<br/><font style="color:rgb(51, 51, 51);">；金额是否转为 Double</font> |
+| <font style="color:rgb(51, 51, 51);">2</font> | **<font style="color:rgb(51, 51, 51);">添加收入记录</font>** | <font style="color:rgb(51, 51, 51);">FAB → 类型选"收入" → 分类选"工资" → 金额填"8000" → 保存</font> | <font style="color:rgb(51, 51, 51);">列表出现"工资 +¥8000.00"的绿色卡片</font> | <font style="color:rgb(51, 51, 51);">类型切换后分类列表是否变为收入分类；颜色逻辑是否正确</font> |
+| <font style="color:rgb(51, 51, 51);">3</font> | **<font style="color:rgb(51, 51, 51);">编辑记录</font>** | <font style="color:rgb(51, 51, 51);">点击已有记录 → 修改金额为"100" → 保存</font> | <font style="color:rgb(51, 51, 51);">该卡片金额更新为 ¥100.00，</font>**<font style="color:rgb(51, 51, 51);">不新增一条</font>**<font style="color:rgb(51, 51, 51);">（验证列表总数不变）</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">editRecord.id</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否在保存时传入新的 Record</font> |
+| <font style="color:rgb(51, 51, 51);">4</font> | **<font style="color:rgb(51, 51, 51);">删除记录</font>** | <font style="color:rgb(51, 51, 51);">长按某条记录 → 弹出对话框 → 点击"删除"</font> | <font style="color:rgb(51, 51, 51);">该卡片消失，列表总数减 1</font> | <font style="color:rgb(51, 51, 51);">对话框确认后是否调用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">viewModel.delete(record)</font>` |
+| <font style="color:rgb(51, 51, 51);">5</font> | **<font style="color:rgb(51, 51, 51);">类型联动</font>** | <font style="color:rgb(51, 51, 51);">新增时：类型选"支出"→ 看分类列表 → 类型改"收入"→ 再看分类列表</font> | <font style="color:rgb(51, 51, 51);">分类列表从 8 个支出分类切换为 5 个收入分类</font> | <font style="color:rgb(51, 51, 51);">Spinner 的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onItemSelectedListener</font>`<br/><font style="color:rgb(51, 51, 51);"> 是否正确更新分类 Adapter</font> |
+| <font style="color:rgb(51, 51, 51);">6</font> | **<font style="color:rgb(51, 51, 51);">输入校验</font>** | <font style="color:rgb(51, 51, 51);">FAB → 金额留空 → 点保存</font> | <font style="color:rgb(51, 51, 51);">弹出提示（Toast 或 Snackbar），弹窗不关闭</font> | <font style="color:rgb(51, 51, 51);">保存按钮的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onClick</font>`<br/><font style="color:rgb(51, 51, 51);"> 中是否有空值判断</font> |
+| <font style="color:rgb(51, 51, 51);">7</font> | **<font style="color:rgb(51, 51, 51);">持久化</font>** | <font style="color:rgb(51, 51, 51);">添加 2 条记录 → 关闭 App（从任务管理器划掉）→ 重新打开</font> | <font style="color:rgb(51, 51, 51);">之前添加的 2 条记录仍然显示</font> | <font style="color:rgb(51, 51, 51);">Room 数据库写入是否成功；提交事务是否正常</font> |
+
+
+
