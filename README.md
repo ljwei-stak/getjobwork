@@ -1,54 +1,205 @@
-# 📝 个人记账本 (AccountBook)
+# 📱 个人记账本 (AccountBook) - 从零到AI智能助手
 
-> **林涉外 27 届计科实习 - 移动应用开发作业**  
-> 作者学号：2025021316
+> **林涉外 27 届计科实习 - 移动应用开发完整项目**  
+> 作者学号：2025021316 | GitHub: [ljwei-stak](https://github.com/ljwei-stak)
 
-一个基于 Android 的完整记账本应用，采用渐进式学习设计，包含 **7 个逐步进阶的任务模块**。
+一个**渐进式学习**的 Android 记账本应用，通过 **7 个逐步进阶的任务模块**，从最简单的 Hello World 发展到功能完整的 AI 智能账单助手。
+
+## 🌟 项目亮点
+
+✨ **完整的学习路径**: 从零基础到成品应用的完整演进过程  
+🏗️ **现代架构实践**: MVVM + Room + LiveData + ViewBinding + Coroutines  
+🤖 **AI 集成**: OpenAI API 智能分类 + 财务报告生成  
+📊 **数据可视化**: MPAndroidChart 饼图/折线图实时统计  
+💾 **本地持久化**: Room 数据库 + SQLite 查询优化  
+🎨 **Material Design**: 精美 UI + 流畅动画 + DiffUtil 性能优化  
+📈 **专业报表**: iText7 生成 PDF 财务报告  
+🔄 **文件解析**: 支持支付宝 CSV / 微信 Excel / 银行 PDF 流水导入
 
 ## 🎯 项目简介
 
-本项目是一个功能完整的记账本应用，通过 Task1-Task7 七个阶段逐步展示 Android 开发的核心技术：
-- **Task 1**: Tab 切换 + Fragment 基础架构
-- **Task 2**: RecyclerView 精美列表展示
-- **Task 3**: Room 数据库持久化存储
-- **Task 4**: 完整的增删改查功能
-- **Task 5**: 实时统计图表展示
-- **Task 6**: 专业级扩展功能（饼图可视化 + DiffUtil性能优化）
-- **Task 7**: **AI智能账单助手**（流水导入 + AI分析 + 财报生成）
+本项目是一个**从入门到精通**的完整 Android 学习项目，通过 Task1-Task7 七个阶段逐步展示现代 Android 开发的核心技术栈和最佳实践。
+
+### 📚 学习路径概览
+
+| 阶段 | 任务名称 | 核心技术 | 完成状态 |
+|------|---------|---------|----------|
+| **Task 1** | 🚀 初识记账本 | TabLayout + ViewPager2 + Fragment | ✅ 完成 |
+| **Task 2** | 🎨 卡片魔法师 | RecyclerView + MaterialCardView + Adapter | ✅ 完成 |
+| **Task 3** | 💾 数据永动机 | Room Database + MVVM + LiveData | ✅ 完成 |
+| **Task 4** | ✋ 指尖操控术 | BottomSheetDialog + CRUD + DatePicker | ✅ 完成 |
+| **Task 5** | 📊 财务分析师 | 实时统计 + LiveData 跨Fragment共享 | ✅ 完成 |
+| **Task 6** | 💎 专业级扩展 | MPAndroidChart + DiffUtil + SearchView | ✅ 完成 |
+| **Task 7** | 🤖 AI智能助手 | OpenAI API + CSV解析 + PDF生成 | ✅ 完成 |
+
+### 🎓 适合人群
+
+- 📱 **Android 初学者**: 从零开始，循序渐进学习 Android 开发
+- 🎒 **计算机专业学生**: 完整的课程设计和毕业设计参考
+- 💼 **求职者**: 展示完整的 Android 项目经验和技术栈
+- 🔧 **开发者**: 学习现代 Android 架构和最佳实践
 
 ## ✨ 功能特性
 
-### Task 1 - 初识记账本 🚀
-- ✅ TabLayout + ViewPager2 实现页面切换
-- ✅ Fragment 基础架构搭建
-- ✅ 账单页和统计页占位展示
+### Task 1 - 🚀 初识记账本（第一个可交互的 App）
 
-### Task 2 - 卡片魔法师 🎨
-- ✅ MaterialCardView 精美卡片设计
-- ✅ RecyclerView 列表展示
-- ✅ 5 条假数据演示（收入/支出）
-- ✅ 悬浮按钮 (FAB) 交互
+**学习目标**: 项目创建、Tab 切换、Fragment 初体验
 
-### Task 3 - 数据永动机 💾
-- ✅ Room 数据库集成
-- ✅ MVVM 架构模式
-- ✅ LiveData 数据观察
-- ✅ ViewModel 状态管理
-- ✅ 数据永久保存
+- ✅ **TabLayout + ViewPager2** 实现左右滑动切换页面
+- ✅ **Fragment 基础架构**搭建，账单页和统计页分离
+- ✅ **ViewBinding** 启用，类型安全的视图访问
+- ✅ **Edge-to-Edge** 沉浸式布局支持
+- ✅ 今天结束时你能看到：手机上跑着一个能左右滑切换“账单”和“统计”的 App
 
-### Task 4 - 指尖操控术 ✋
-- ✅ BottomSheetDialog 添加/编辑弹窗
-- ✅ DatePicker 日期选择器
-- ✅ Spinner 分类联动
-- ✅ 长按删除 + 确认对话框
-- ✅ 输入校验
+**技术要点**:
+```kotlin
+// ActivityTaskBinding 自动生成的绑定类
+binding = ActivityTaskBinding.inflate(layoutInflater)
+setContentView(binding.root)
 
-### Task 5 - 财务分析师 📊
-- ✅ 实时统计总收入、总支出、结余
-- ✅ LiveData 跨 Fragment 数据共享
-- ✅ 自动计算与更新（账单页改动 → 统计页刷新）
-- ✅ 三列汇总卡片（绿色收入、红色支出、蓝色结余）
-- ✅ 饼图占位区（为进阶篇预留）
+// TabLayoutMediator 关联 Tab 和 ViewPager2
+TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+    tab.text = when (position) {
+        0 -> getString(R.string.tab_bills)      // “账单”
+        1 -> getString(R.string.tab_statistics)  // “统计”
+    }
+}.attach()
+```
+
+---
+
+### Task 2 - 🎨 卡片魔法师（精美列表展示）
+
+**学习目标**: RecyclerView、Material Design、Adapter 模式
+
+- ✅ **MaterialCardView** 精美卡片设计，圆角阴影效果
+- ✅ **RecyclerView** 列表展示，支持滚动和复用
+- ✅ **5 条假数据**演示（收入/支出），颜色区分
+- ✅ **悬浮按钮 (FAB)** 交互，点击弹出 Toast
+- ✅ **金额颜色区分**: 绿色收入 (+¥)、红色支出 (-¥)
+- ✅ **备注显隐逻辑**: 有备注时显示，无备注时隐藏
+
+**技术要点**:
+```kotlin
+// RecyclerView Adapter 基础结构
+class RecordAdapter(
+    private val onItemClick: (Record) -> Unit,
+    private val onItemLongClick: (Record) -> Unit
+) : RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
+    
+    override fun onCreateViewHolder(...) = ...
+    override fun onBindViewHolder(...) = ...
+    override fun getItemCount() = records.size
+}
+```
+
+---
+
+### Task 3 - 💾 数据永动机（Room 数据库持久化）
+
+**学习目标**: Room Database、MVVM 架构、LiveData 响应式编程
+
+- ✅ **Room 数据库**集成，SQLite 抽象层
+- ✅ **MVVM 架构模式**: Model-View-ViewModel 分层
+- ✅ **LiveData 数据观察**: 数据变化自动通知 UI
+- ✅ **ViewModel 状态管理**: 生命周期感知，配置变更不丢失
+- ✅ **KSP (Kotlin Symbol Processing)**: 编译时代码生成
+- ✅ **数据永久保存**: 卸载前数据不会丢失
+
+**技术要点**:
+```kotlin
+// @Entity 定义数据库表
+@Entity(tableName = "records")
+data class Record(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(name = "type") val type: Int,        // 0=支出, 1=收入
+    @ColumnInfo(name = "category") val category: String,
+    @ColumnInfo(name = "amount") val amount: Double,
+    @ColumnInfo(name = "note") val note: String? = null,
+    @ColumnInfo(name = "date") val date: Long
+)
+
+// @Dao 定义数据访问接口
+@Dao
+interface RecordDao {
+    @Query("SELECT * FROM records ORDER BY date DESC")
+    suspend fun getAllRecords(): List<Record>
+    
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(record: Record): Long
+}
+
+// ViewModel 管理数据
+val allRecords: LiveData<List<Record>> get() = _allRecords
+```
+
+---
+
+### Task 4 - ✋ 指尖操控术（完整的增删改查）
+
+**学习目标**: Dialog、表单验证、日期选择器、用户交互
+
+- ✅ **BottomSheetDialog** 添加/编辑弹窗，底部滑出动画
+- ✅ **DatePicker** 日期选择器，日历界面选择日期
+- ✅ **Spinner** 分类联动，根据收入/支出动态切换分类
+- ✅ **长按删除** + AlertDialog 确认对话框
+- ✅ **输入校验**: 金额必须为正数、分类不能为空
+- ✅ **Snackbar** 提示操作结果
+- ✅ **实时刷新**: 添加/删除后列表自动更新
+
+**技术要点**:
+```kotlin
+// BottomSheetDialog 自定义布局
+val dialog = AddEditRecordDialog(
+    editRecord = null,  // null 表示新增，非 null 表示编辑
+    onSave = { record ->
+        viewModel.insert(record)
+        Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show()
+    }
+)
+dialog.show(childFragmentManager, "AddDialog")
+
+// DatePickerDialog 选择日期
+DatePickerDialog(requireContext(), { _, year, month, day ->
+    val calendar = Calendar.getInstance()
+    calendar.set(year, month, day)
+    selectedDate = calendar.timeInMillis
+}, year, month, day).show()
+```
+
+---
+
+### Task 5 - 📊 财务分析师（实时统计图表）
+
+**学习目标**: LiveData 跨 Fragment 共享、数据统计、响应式更新
+
+- ✅ **实时统计**总收入、总支出、结余
+- ✅ **LiveData 跨 Fragment 数据共享**: 账单页改动 → 统计页自动刷新
+- ✅ **三列汇总卡片**: 绿色收入、红色支出、蓝色结余
+- ✅ **自动计算与更新**: 无需手动刷新，数据变化即时反映
+- ✅ **饼图占位区**: 为进阶篇预留（Task 6 实现）
+- ✅ **格式化显示**: 金额千分位分隔符，小数点两位
+
+**技术要点**:
+```kotlin
+// ViewModel 中共享数据
+private val _totalIncome = MutableLiveData(0.0)
+val totalIncome: LiveData<Double> get() = _totalIncome
+
+private val _totalExpense = MutableLiveData(0.0)
+val totalExpense: LiveData<Double> get() = _totalExpense
+
+// Fragment 中观察数据变化
+viewModel.totalIncome.observe(viewLifecycleOwner) { income ->
+    binding.tvIncome.text = "¥${String.format("%.2f", income)}"
+}
+
+// SQL 聚合查询
+@Query("SELECT SUM(amount) FROM records WHERE type = ${Record.TYPE_INCOME}")
+suspend fun getTotalIncome(): Double?
+```
+
+---
 
 ### Task 6 - 让记账本更专业 💎
 - ✅ **X1 饼图大师**: 支出/收入分类占比可视化（环形饼图）
@@ -847,31 +998,453 @@ override fun onDestroyView() {
 }
 ```
 
+## 🏗️ 技术架构详解
+
+### 整体架构图
+
+```
+┌─────────────────────────────────────────────────────┐
+│                    Presentation Layer                │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐            │
+│  │ Activity │ │Fragment  │ │  Dialog  │            │
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘            │
+│       │             │             │                  │
+│  ┌────▼─────────────▼─────────────▼─────┐           │
+│  │         ViewBinding (UI)             │           │
+│  └────────────────┬────────────────────┘           │
+└───────────────────┼────────────────────────────────┘
+                    │ observes / calls
+┌───────────────────▼────────────────────────────────┐
+│                     ViewModel Layer                 │
+│  ┌──────────────────────────────────────────┐      │
+│  │     RecordViewModel (LiveData)           │      │
+│  │  - allRecords: LiveData<List<Record>>    │      │
+│  │  - totalIncome: LiveData<Double>         │      │
+│  │  - totalExpense: LiveData<Double>        │      │
+│  └────────────────┬─────────────────────────┘      │
+└───────────────────┼────────────────────────────────┘
+                    │ calls
+┌───────────────────▼────────────────────────────────┐
+│                   Repository Layer                  │
+│  ┌──────────────────────────────────────────┐      │
+│  │       RecordRepository                   │      │
+│  │  - suspend fun getAllRecords()           │      │
+│  │  - suspend fun insert(record: Record)    │      │
+│  └────────────────┬─────────────────────────┘      │
+└───────────────────┼────────────────────────────────┘
+                    │ uses
+┌───────────────────▼────────────────────────────────┐
+│                      Data Layer                     │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐          │
+│  │   DAO    │ │ Database │ │  Model   │          │
+│  │RecordDao │ │AppDatabase│ │ Record   │          │
+│  └──────────┘ └──────────┘ └──────────┘          │
+└────────────────────────────────────────────────────┘
+```
+
+### MVVM 架构模式
+
+本项目严格遵循 **MVVM (Model-View-ViewModel)** 架构模式，实现关注点分离：
+
+#### 1. Model (数据层)
+- **Entity**: `Record.kt` - 数据库表结构定义
+- **DAO**: `RecordDao.kt` - 数据访问对象，SQL 查询
+- **Database**: `AppDatabase.kt` - Room 数据库实例
+- **Repository**: `RecordRepository.kt` - 数据仓库，抽象数据源
+
+#### 2. ViewModel (视图模型层)
+- **RecordViewModel.kt** - 管理 UI 相关数据，处理业务逻辑
+- 使用 `LiveData` 实现响应式数据流
+- 生命周期感知，配置变更不丢失数据
+
+#### 3. View (视图层)
+- **Activity/Fragment** - UI 控制器，响应用户交互
+- **ViewBinding** - 类型安全的视图访问
+- **Adapter** - RecyclerView 数据绑定
+
+### 数据流示例
+
+```kotlin
+// 1. 用户点击添加记录按钮
+binding.fabAdd.setOnClickListener {
+    showAddDialog()
+}
+
+// 2. 对话框中保存记录
+AddEditRecordDialog(
+    onSave = { record ->
+        viewModel.insert(record)  // 调用 ViewModel
+    }
+).show(childFragmentManager, "AddDialog")
+
+// 3. ViewModel 插入数据库
+fun insert(record: Record) {
+    viewModelScope.launch {  // 协程异步执行
+        repository.insert(record)  // 调用 Repository
+        refreshData()  // 刷新数据
+    }
+}
+
+// 4. Repository 操作数据库
+suspend fun insert(record: Record) {
+    recordDao.insert(record)  // 调用 DAO
+}
+
+// 5. DAO 执行 SQL 插入
+@Insert(onConflict = OnConflictStrategy.REPLACE)
+suspend fun insert(record: Record): Long
+
+// 6. 数据变化触发 LiveData 更新
+viewModel.allRecords.observe(viewLifecycleOwner) { records ->
+    adapter.updateRecords(records)  // UI 自动刷新
+}
+```
+
+---
+
+## 💡 开发最佳实践
+
+### 1. ViewBinding 防止内存泄漏
+
+```kotlin
+// ✅ 正确做法：Fragment 中使用 nullable binding
+private var _binding: FragmentBillsBinding? = null
+private val binding get() = _binding!!
+
+override fun onCreateView(...): View {
+    _binding = FragmentBillsBinding.inflate(inflater, container, false)
+    return binding.root
+}
+
+override fun onDestroyView() {
+    super.onDestroyView()
+    _binding = null  // ⭐ 重要！防止内存泄漏
+}
+```
+
+### 2. 协程与 ViewModel
+
+```kotlin
+// ✅ 使用 viewModelScope 自动管理生命周期
+class RecordViewModel(application: Application) : AndroidViewModel(application) {
+    
+    fun insert(record: Record) {
+        viewModelScope.launch {  // ViewModel 销毁时自动取消
+            repository.insert(record)
+            refreshData()
+        }
+    }
+}
+
+// ❌ 避免：在 Fragment 中直接使用 GlobalScope
+GlobalScope.launch {  // 可能导致内存泄漏
+    // ...
+}
+```
+
+### 3. LiveData 观察模式
+
+```kotlin
+// ✅ 使用 viewLifecycleOwner 确保生命周期安全
+viewModel.totalIncome.observe(viewLifecycleOwner) { income ->
+    binding.tvIncome.text = "¥${String.format("%.2f", income)}"
+}
+
+// ❌ 避免：使用 this (Activity) 在 Fragment 中
+viewModel.totalIncome.observe(this) { ... }  // 可能导致内存泄漏
+```
+
+### 4. DiffUtil 性能优化
+
+```kotlin
+// ✅ 使用 DiffUtil 精准更新列表
+fun updateRecords(newRecords: List<Record>) {
+    val diffResult = DiffUtil.calculateDiff(
+        RecordDiffCallback(records, newRecords)
+    )
+    records.clear()
+    records.addAll(newRecords)
+    diffResult.dispatchUpdatesTo(this)  // 只刷新变化的部分
+}
+
+// ❌ 避免：使用 notifyDataSetChanged()
+fun updateRecords(newRecords: List<Record>) {
+    records.clear()
+    records.addAll(newRecords)
+    notifyDataSetChanged()  // 全部重新绑定，性能差
+}
+```
+
+### 5. Room 数据库迁移
+
+```kotlin
+// ✅ 使用 fallbackToDestructiveMigration 开发阶段
+Room.databaseBuilder(
+    context.applicationContext,
+    AppDatabase::class.java,
+    "account_book.db"
+).fallbackToDestructiveMigration(dropAllTables = true).build()
+
+// ⚠️ 生产环境应使用正式迁移
+.addMigrations(MIGRATION_1_2)
+```
+
+---
+
+## 🔧 常见问题与解决方案
+
+### Q1: Gradle 同步失败
+
+**问题**: `Could not resolve com.github.PhilJay:MPAndroidChart:v3.1.0`
+
+**解决**: 确保 `settings.gradle.kts` 包含 JitPack 仓库
+```kotlin
+repositories {
+    maven { url = uri("https://www.jitpack.io") }
+    google()
+    mavenCentral()
+}
+```
+
+### Q2: KSP 编译错误
+
+**问题**: `Unresolved reference: RecordDao_Impl`
+
+**解决**: 
+1. 清理项目: `Build → Clean Project`
+2. 重新构建: `Build → Rebuild Project`
+3. 检查 `gradle.properties` 是否包含:
+```properties
+android.disallowKotlinSourceSets=false
+```
+
+### Q3: ViewBinding 找不到 ID
+
+**问题**: `Unresolved reference: tvCategoryName`
+
+**解决**:
+1. 检查布局文件中是否有该 ID
+2. 确认 `build.gradle.kts` 启用了 ViewBinding:
+```kotlin
+buildFeatures {
+    viewBinding = true
+}
+```
+3. Sync Project with Gradle Files
+
+### Q4: LiveData 不更新
+
+**问题**: 数据插入后 UI 没有刷新
+
+**解决**:
+1. 确认使用了 `postValue()` 或 `setValue()`
+2. 检查是否在正确的线程上更新
+3. 确认 Observer 已正确注册:
+```kotlin
+viewModel.allRecords.observe(viewLifecycleOwner) { records ->
+    // 确保这段代码被执行
+}
+```
+
+### Q5: CSV 解析乱码
+
+**问题**: 支付宝 CSV 文件解析后中文显示乱码
+
+**解决**: 使用 GBK 编码读取
+```kotlin
+context.contentResolver.openInputStream(uri)?.use { inputStream ->
+    val reader = CSVReader(InputStreamReader(inputStream, "GBK"))
+    // ...
+}
+```
+
+---
+
+## 📊 性能优化建议
+
+### 1. 列表滚动优化
+
+- ✅ 使用 `DiffUtil` 替代 `notifyDataSetChanged()`
+- ✅ 启用 RecyclerView 预取:
+```kotlin
+recyclerView.setItemViewCacheSize(20)
+recyclerView.setHasFixedSize(true)
+```
+
+### 2. 图片加载优化
+
+- ✅ 使用 Glide/Picasso 异步加载图片
+- ✅ 压缩图片尺寸，避免 OOM
+
+### 3. 数据库查询优化
+
+- ✅ 使用索引加速查询:
+```kotlin
+@Entity(tableName = "records", indices = [Index(value = ["date"])])
+data class Record(...)
+```
+
+- ✅ 避免在主线程执行数据库操作
+- ✅ 使用分页加载大量数据
+
+### 4. 内存优化
+
+- ✅ Fragment 中及时释放 Binding
+- ✅ 避免在 Adapter 中创建匿名对象
+- ✅ 使用 `by lazy` 延迟初始化
+
+---
+
+## 🚀 未来扩展方向
+
+### 短期计划 (1-3 个月)
+
+- [ ] **云端同步**: Firebase / 自建后端 API
+- [ ] **数据备份**: 导出 JSON/Excel 备份文件
+- [ ] **多账本**: 支持多个账本切换
+- [ ] **预算管理**: 设置月度预算，超支提醒
+- [ ] **定时报告**: 每周/每月自动生成财报并推送
+
+### 中期计划 (3-6 个月)
+
+- [ ] **OCR 识别**: 拍照识别小票，自动录入
+- [ ] **语音记账**: 语音输入，AI 解析
+- [ ] **多货币**: 支持外币记账，实时汇率
+- [ ] **账单分享**: 生成精美长图，分享到社交网络
+- [ ] **插件系统**: 支持第三方分类规则、主题
+
+### 长期愿景 (6-12 个月)
+
+- [ ] **智能推荐**: 基于历史数据推荐分类
+- [ ] **异常检测**: 识别异常消费，发出警告
+- [ ] **财务规划**: AI 助手提供理财建议
+- [ ] **跨平台**: Flutter/React Native 移植到 iOS
+- [ ] **开源社区**: 建立插件市场，社区贡献
+
+---
+
+## 📚 学习资源推荐
+
+### Android 官方文档
+
+- [Android Developers](https://developer.android.com/)
+- [Room Database](https://developer.android.com/training/data-storage/room)
+- [ViewModel & LiveData](https://developer.android.com/topic/libraries/architecture/viewmodel)
+- [Material Design](https://material.io/components)
+
+### Kotlin 学习
+
+- [Kotlin 官方文档](https://kotlinlang.org/docs/home.html)
+- [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html)
+- [Kotlin Koans](https://play.kotlinlang.org/koans)
+
+### 进阶阅读
+
+- 《Android 编程权威指南》
+- 《Kotlin 实战》
+- 《Clean Architecture》
+- 《Head First Design Patterns》
+
+---
+
 ## 🤝 贡献指南
 
 欢迎提交 Issue 和 Pull Request！
 
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
+### 贡献流程
+
+1. **Fork** 本仓库
+2. **创建特性分支** (`git checkout -b feature/AmazingFeature`)
+3. **提交更改** (`git commit -m 'feat: Add some AmazingFeature'`)
+4. **推送到分支** (`git push origin feature/AmazingFeature`)
+5. **开启 Pull Request**
+
+### Commit 规范
+
+遵循 [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` 新功能
+- `fix:` 修复 Bug
+- `docs:` 文档更新
+- `style:` 代码格式（不影响功能）
+- `refactor:` 重构代码
+- `test:` 测试相关
+- `chore:` 构建过程或辅助工具变动
+
+### 代码规范
+
+- 遵循 [Kotlin 官方代码风格](https://kotlinlang.org/docs/coding-conventions.html)
+- 使用 4 空格缩进
+- 类名使用 PascalCase (`RecordAdapter`)
+- 函数名使用 camelCase (`updateRecords`)
+- 常量使用 UPPER_SNAKE_CASE (`TYPE_EXPENSE`)
+
+---
 
 ## 📄 许可证
 
 本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
 
-## 👨‍💻 作者
+### MIT 许可证概要
 
-- **ljwei-stak** - [GitHub](https://github.com/ljwei-stak)
-
-## 🙏 致谢
-
-感谢以下开源项目：
-- [Android Jetpack](https://developer.android.com/jetpack)
-- [Room Persistence Library](https://developer.android.com/training/data-storage/room)
-- [Material Design Components](https://material.io/components)
+- ✅ 允许商业使用
+- ✅ 允许修改和分发
+- ✅ 允许私人使用
+- ⚠️ 需要包含原始版权声明
 
 ---
 
-⭐ 如果这个项目对你有帮助，请给个 Star 支持一下！
+## 👨‍💻 作者
+
+**ljwei-stak** 
+
+- GitHub: [@ljwei-stak](https://github.com/ljwei-stak)
+- 项目地址: [https://github.com/ljwei-stak/getjobwork](https://github.com/ljwei-stak/getjobwork)
+
+---
+
+## 🙏 致谢
+
+感谢以下开源项目和技术：
+
+### 核心框架
+- [Android Jetpack](https://developer.android.com/jetpack) - 现代 Android 开发组件
+- [Kotlin](https://kotlinlang.org/) - 简洁高效的编程语言
+- [Room Persistence Library](https://developer.android.com/training/data-storage/room) - 本地数据库
+
+### UI 组件
+- [Material Design Components](https://material.io/components) - 精美的 UI 设计
+- [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart) - 强大的图表库
+
+### 工具库
+- [OpenCSV](https://opencsv.sourceforge.net/) - CSV 文件解析
+- [Apache POI](https://poi.apache.org/) - Excel 文件处理
+- [iText7](https://itextpdf.com/) - PDF 文档生成
+- [Retrofit](https://square.github.io/retrofit/) - 网络请求库
+
+### 开发工具
+- [Android Studio](https://developer.android.com/studio) - 官方 IDE
+- [Gradle](https://gradle.org/) - 构建工具
+- [Git](https://git-scm.com/) - 版本控制
+
+---
+
+## 📞 联系方式
+
+如有问题或建议，欢迎通过以下方式联系：
+
+- 📧 Email: [您的邮箱]
+- 💬 GitHub Issues: [提交问题](https://github.com/ljwei-stak/getjobwork/issues)
+- 📱 WeChat: [您的微信号]
+
+---
+
+<div align="center">
+
+**⭐ 如果这个项目对你有帮助，请给个 Star 支持一下！**
+
+Made with ❤️ by ljwei-stak
+
+[⬆ Back to Top](#-个人记账本-accountbook---从零到ai智能助手)
+
+</div>
