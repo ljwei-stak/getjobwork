@@ -2137,6 +2137,613 @@ android {
 | <font style="color:rgb(51, 51, 51);">Spinner 选中无效</font> | `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onItemSelectedListener</font>`<br/><font style="color:rgb(51, 51, 51);"> 里用错了 position</font> | <font style="color:rgb(51, 51, 51);">位置 0=支出, 1=收入</font> |
 
 
+task6
+# <font style="color:rgb(51, 51, 51);">Task6：让记账本更专业 —— 可选扩展任务</font>
+<font style="color:rgb(119, 119, 119);">5 天核心功能已完成，下面是一系列</font>**<font style="color:rgb(119, 119, 119);">可选的进阶挑战</font>**<font style="color:rgb(119, 119, 119);">。每个任务都是独立的，</font>**<font style="color:rgb(119, 119, 119);">挑你感兴趣的做</font>**<font style="color:rgb(119, 119, 119);">，不需要按顺序。</font>
 
+| **<font style="color:rgb(51, 51, 51);">编号</font>** | **<font style="color:rgb(51, 51, 51);">任务名称</font>** | **<font style="color:rgb(51, 51, 51);">你能学到的技术</font>** | **<font style="color:rgb(51, 51, 51);">⏱</font>****<font style="color:rgb(51, 51, 51);"> 预计时长</font>** |
+| :---: | :--- | :--- | :---: |
+| <font style="color:rgb(51, 51, 51);">X1</font> | <font style="color:rgb(51, 51, 51);">🥧</font><font style="color:rgb(51, 51, 51);"> </font>**<font style="color:rgb(51, 51, 51);">饼图大师</font>**<font style="color:rgb(51, 51, 51);"> — 支出分类占比可视化</font> | <font style="color:rgb(51, 51, 51);">MPAndroidChart 饼图、分类汇总数据</font> | <font style="color:rgb(51, 51, 51);">1 小时</font> |
+| <font style="color:rgb(51, 51, 51);">X2</font> | <font style="color:rgb(51, 51, 51);">📈</font><font style="color:rgb(51, 51, 51);"> </font>**<font style="color:rgb(51, 51, 51);">趋势分析师</font>**<font style="color:rgb(51, 51, 51);"> — 月度收支趋势折线图</font> | <font style="color:rgb(51, 51, 51);">MPAndroidChart 折线图、按月聚合</font> | <font style="color:rgb(51, 51, 51);">45 分钟</font> |
+| <font style="color:rgb(51, 51, 51);">X3</font> | <font style="color:rgb(51, 51, 51);">🗓️</font><font style="color:rgb(51, 51, 51);"> </font>**<font style="color:rgb(51, 51, 51);">月度筛选器</font>**<font style="color:rgb(51, 51, 51);"> — 只看某个月的记录</font> | <font style="color:rgb(51, 51, 51);">Dialog 筛选、日期范围查询</font> | <font style="color:rgb(51, 51, 51);">45 分钟</font> |
+| <font style="color:rgb(51, 51, 51);">X4</font> | <font style="color:rgb(51, 51, 51);">🔍</font><font style="color:rgb(51, 51, 51);"> </font>**<font style="color:rgb(51, 51, 51);">智能搜索</font>**<font style="color:rgb(51, 51, 51);"> — 按关键词搜索记录</font> | <font style="color:rgb(51, 51, 51);">SearchView、SQL LIKE 查询、动态过滤</font> | <font style="color:rgb(51, 51, 51);">45 分钟</font> |
+| <font style="color:rgb(51, 51, 51);">X5</font> | <font style="color:rgb(51, 51, 51);">⚡</font><font style="color:rgb(51, 51, 51);"> </font>**<font style="color:rgb(51, 51, 51);">极速刷新</font>**<font style="color:rgb(51, 51, 51);"> — DiffUtil 精准更新列表</font> | <font style="color:rgb(51, 51, 51);">DiffUtil 差异计算、RecyclerView 动画、性能优化</font> | <font style="color:rgb(51, 51, 51);">45 分钟</font> |
+
+
+
+
+## <font style="color:rgb(51, 51, 51);">X1 </font><font style="color:rgb(51, 51, 51);">🥧</font><font style="color:rgb(51, 51, 51);"> 饼图大师 —— 支出分类占比可视化</font>
+**<font style="color:rgb(119, 119, 119);">学什么</font>**<font style="color:rgb(119, 119, 119);">：MPAndroidChart 饼图库，把数据库查出的分类汇总数据画成彩色饼图</font>
+
+### <font style="color:rgb(51, 51, 51);">为什么做这个</font>
+<font style="color:rgb(51, 51, 51);">现在统计页只有一个占位 View。MPAndroidChart 已经在 Day 1 引入了依赖，把它用起来！饼图让消费结构一目了然——一眼看出"餐饮花最多"还是"购物超标了"。</font>
+
+### <font style="color:rgb(51, 51, 51);">① 替换布局中的占位 View</font>
+<font style="color:rgb(51, 51, 51);">修改 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/layout/fragment_statistics.xml</font>`<font style="color:rgb(51, 51, 51);">，找到 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);"><View android:id="@+id/pie_chart" ... /></font>`<font style="color:rgb(51, 51, 51);"> 这一行，替换为：</font>
+
+```xml
+<com.github.mikephil.charting.charts.PieChart
+  android:id="@+id/pie_chart"
+  android:layout_width="match_parent"
+  android:layout_height="260dp"
+  android:layout_marginTop="8dp" />
+```
+
+### <font style="color:rgb(51, 51, 51);">② 确认 RecordRepository 和 ViewModel 已就绪</font>
+<font style="color:rgb(51, 51, 51);">Day 3 已经做好了 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getCategorySummary</font>`<font style="color:rgb(51, 51, 51);"> 和 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">expenseCategorySummary</font>`<font style="color:rgb(51, 51, 51);">，检查即可：</font>
+
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordRepository.kt</font>`<font style="color:rgb(51, 51, 51);"> 中已有 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">suspend fun getCategorySummary(type: Int): List<CategorySummary></font>`
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordViewModel.kt</font>`<font style="color:rgb(51, 51, 51);"> 中已有 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">val expenseCategorySummary: LiveData<List<CategorySummary>></font>`
++ `<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">refreshData()</font>`<font style="color:rgb(51, 51, 51);"> 中已有 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">_expenseCategorySummary.postValue(...)</font>`
+
+<font style="color:rgb(119, 119, 119);">如果没有，回头补充 Day 3 的 RecordViewModel 和 RecordRepository。</font>
+
+### <font style="color:rgb(51, 51, 51);">③ 在 StatisticsFragment 中画饼图</font>
+<font style="color:rgb(51, 51, 51);">修改 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">StatisticsFragment.kt</font>`<font style="color:rgb(51, 51, 51);">，在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">observeData()</font>`<font style="color:rgb(51, 51, 51);"> 方法末尾追加观察和渲染：</font>
+
+```kotlin
+// 在 observeData() 方法末尾追加 ↓
+
+// 观察支出分类汇总 → 画饼图
+viewModel.expenseCategorySummary.observe(viewLifecycleOwner) { summary ->
+    setupPieChart(summary)
+}
+```
+
+<font style="color:rgb(51, 51, 51);">然后在类中新增两个方法：</font>
+
+```kotlin
+/**
+ * 配置并渲染饼图
+ */
+private fun setupPieChart(summary: List<CategorySummary>) {
+    if (summary.isEmpty()) {
+        binding.pieChart.clear()
+        binding.pieChart.centerText = "暂无数据"
+        return
+    }
+
+    val entries = summary.map { PieEntry(it.total.toFloat(), it.category) }
+
+    val dataSet = PieDataSet(entries, "").apply {
+        // 每个分类对应的颜色
+        colors = summary.map {
+            val color = Record.getCategoryColor(it.category)
+            Color.rgb(
+                android.graphics.Color.red(color),
+                android.graphics.Color.green(color),
+                android.graphics.Color.blue(color)
+            )
+        }
+        sliceSpace = 3f           // 扇形间距
+        valueTextSize = 12f       // 百分比字体大小
+        valueTextColor = Color.WHITE
+    }
+
+    val pieData = PieData(dataSet).apply {
+        setValueFormatter(object : ValueFormatter() {
+            override fun getPieLabel(value: Float, pieEntry: PieEntry?): String {
+                return "¥${DateUtils.formatAmount(value.toDouble())}"
+            }
+        })
+    }
+
+    binding.pieChart.apply {
+        data = pieData
+        centerText = "支出分类"
+        setUsePercentValues(true)        // 显示百分比
+        description.isEnabled = false    // 关闭右下角描述文字
+        legend.textColor = android.graphics.Color.DKGRAY
+        isDrawHoleEnabled = true         // 空心圆环
+        holeRadius = 40f
+        animateY(1000)                   // 动画旋转 1 秒
+        invalidate()                     // 刷新
+    }
+}
+```
+
+<font style="color:rgb(51, 51, 51);">需要添加的 import：</font>
+
+```kotlin
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import edu.guigu.accountbook.data.dao.CategorySummary
+import edu.guigu.accountbook.data.model.Record
+```
+
+### <font style="color:rgb(51, 51, 51);">④ 运行测试</font>
+1. <font style="color:rgb(51, 51, 51);">先添加几条不同分类的支出记录</font>
+2. <font style="color:rgb(51, 51, 51);">切换到统计页</font>
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ <font style="color:rgb(51, 51, 51);">饼图自动显示，不同分类用不同颜色</font>
++ <font style="color:rgb(51, 51, 51);">扇形上标注金额，周围显示百分比</font>
++ <font style="color:rgb(51, 51, 51);">添加/删除记录后，饼图自动刷新</font>
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">成就解锁</font>**<font style="color:rgb(119, 119, 119);">：第一个数据可视化图表完成！</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">X2 </font><font style="color:rgb(51, 51, 51);">📈</font><font style="color:rgb(51, 51, 51);"> 趋势分析师 —— 月度收支趋势折线图</font>
+**<font style="color:rgb(119, 119, 119);">学什么</font>**<font style="color:rgb(119, 119, 119);">：MPAndroidChart 折线图，数据聚合、多线对比</font>
+
+### <font style="color:rgb(51, 51, 51);">为什么做这个</font>
+<font style="color:rgb(51, 51, 51);">饼图看结构，折线图看趋势。你可以看到"这个月比上个月省了多少"。</font>
+
+### <font style="color:rgb(51, 51, 51);">① 在 DAO 中新增按月聚合查询</font>
+<font style="color:rgb(51, 51, 51);">在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">data/dao/RecordDao.kt</font>`<font style="color:rgb(51, 51, 51);"> 的 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">CategorySummary</font>`<font style="color:rgb(51, 51, 51);"> 下方新增一个数据类：</font>
+
+```kotlin
+/** 月度收支趋势数据 */
+data class MonthlyTrend(
+    val month: String,          // "2025-05"
+    val income: Double,         // 该月收入
+    val expense: Double         // 该月支出
+)
+```
+
+<font style="color:rgb(51, 51, 51);">在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordDao</font>`<font style="color:rgb(51, 51, 51);"> 接口中新增查询（SQLite 不支持直接 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">DATE_FORMAT</font>`<font style="color:rgb(51, 51, 51);">，这里用分组计算）：</font>
+
+```kotlin
+/**
+ * 按月汇总收支趋势
+ */
+@Query("""
+    SELECT
+        strftime('%Y-%m', date / 1000, 'unixepoch') AS month,
+        SUM(CASE WHEN type = 1 THEN amount ELSE 0 END) AS income,
+        SUM(CASE WHEN type = 0 THEN amount ELSE 0 END) AS expense
+    FROM records
+    GROUP BY month
+    ORDER BY month ASC
+""")
+suspend fun getMonthlyTrend(): List<MonthlyTrend>
+```
+
+### <font style="color:rgb(51, 51, 51);">② 在统计页新增折线图</font>
+<font style="color:rgb(51, 51, 51);">修改 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/layout/fragment_statistics.xml</font>`<font style="color:rgb(51, 51, 51);">，在饼图卡片下方追加：</font>
+
+```kotlin
+<!-- ===== 3. 月度趋势折线图卡片 ===== -->
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="16dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:contentPadding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="月度收支趋势"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
+```
+
+### <font style="color:rgb(51, 51, 51);">③ 在 Fragment 中渲染折线图</font>
+<font style="color:rgb(51, 51, 51);">在 </font>`<font style="color:#080808;background-color:#ffffff;">RecordRepository.kt</font>`<font style="color:#080808;background-color:#ffffff;"> </font><font style="color:rgb(51, 51, 51);">中新增：</font>
+
+```kotlin
+/** 获取按月汇总的收支趋势 */
+suspend fun getMonthlyTrend(): List<MonthlyTrend> =
+    dao.getMonthlyTrend()
+```
+
+<font style="color:rgb(51, 51, 51);"></font>
+
+<font style="color:rgb(51, 51, 51);">在 </font>`<font style="color:#080808;background-color:#ffffff;">RecordViewModle.kt</font>`<font style="color:#080808;background-color:#ffffff;"> </font><font style="color:rgb(51, 51, 51);">中新增：</font>
+
+```kotlin
+/** 按月汇总收支趋势 */
+private val _monthlyTrend = MutableLiveData<List<MonthlyTrend>>(emptyList())
+val monthlyTrend: LiveData<List<MonthlyTrend>> get() = _monthlyTrend
+```
+
+<font style="color:rgb(51, 51, 51);">在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">StatisticsFragment.kt</font>`<font style="color:rgb(51, 51, 51);"> 中新增：</font>
+
+```kotlin
+// 观察月度趋势 → 画折线图
+viewModel.monthlyTrend.observe(viewLifecycleOwner) { trend ->
+    setupLineChart(trend)
+}
+```
+
+```kotlin
+/** 配置并渲染折线图 */
+private fun setupLineChart(trend: List<MonthlyTrend>) {
+    if (trend.isEmpty()) return
+    val incomeEntries = mutableListOf<com.github.mikephil.charting.data.Entry>()
+    val expenseEntries = mutableListOf<com.github.mikephil.charting.data.Entry>()
+    val labels = mutableListOf<String>()
+
+    trend.forEachIndexed { index, item ->
+        incomeEntries.add(com.github.mikephil.charting.data.Entry(index.toFloat(), item.income.toFloat()))
+        expenseEntries.add(com.github.mikephil.charting.data.Entry(index.toFloat(), item.expense.toFloat()))
+        labels.add(item.month)
+    }
+
+    val incomeSet = LineDataSet(incomeEntries, "收入").apply {
+        color = Color.parseColor("#2ECC71")
+        setCircleColor(Color.parseColor("#2ECC71"))
+        lineWidth = 2f
+        circleRadius = 4f
+        valueTextSize = 10f
+    }
+
+    val expenseSet = LineDataSet(expenseEntries, "支出").apply {
+        color = android.graphics.Color.parseColor("#E74C3C")
+        setCircleColor(Color.parseColor("#E74C3C"))
+        lineWidth = 2f
+        circleRadius = 4f
+        valueTextSize = 10f
+    }
+
+    binding.lineChart.apply {
+        data = LineData(incomeSet, expenseSet)
+        description.isEnabled = false
+        xAxis.valueFormatter = object : com.github.mikephil.charting.formatter.IndexAxisValueFormatter(labels) {}
+        xAxis.granularity = 1f
+        axisRight.isEnabled = false
+        animateX(800)
+        invalidate()
+    }
+}
+```
+
+> 🎉<font style="color:rgb(51, 51, 51);"> </font>**成就解锁**<font style="color:rgb(51, 51, 51);">：多线趋势对比图完成，一眼看穿消费习惯变化！</font>
+>
+
+
+
+## <font style="color:rgb(51, 51, 51);">X3 </font><font style="color:rgb(51, 51, 51);">🗓️</font><font style="color:rgb(51, 51, 51);"> 月度筛选器 —— 只看某个月的记录</font>
+**<font style="color:rgb(119, 119, 119);">学什么</font>**<font style="color:rgb(119, 119, 119);">：AlertDialog 筛选、日期范围查询、用户交互设计</font>
+
+### <font style="color:rgb(51, 51, 51);">为什么做这个</font>
+<font style="color:rgb(51, 51, 51);">记录多了以后，翻几十条找一个月的记录很痛苦。加一个月度筛选按钮，一键只看某个月。</font>
+
+### <font style="color:rgb(51, 51, 51);">① 在账单页布局中加筛选按钮</font>
+<font style="color:rgb(51, 51, 51);">修改 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">res/layout/fragment_bills.xml</font>`<font style="color:rgb(51, 51, 51);">，在标题旁加一个筛选按钮：</font>
+
+```kotlin
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/recent_records"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="筛选月份"
+        android:textSize="12sp"
+        style="@style/Widget.Material3.Chip.Filter" />
+</LinearLayout>
+```
+
+<font style="color:rgb(51, 51, 51);">然后把原来的独立标题 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">TextView</font>`<font style="color:rgb(51, 51, 51);"> 删掉。</font>
+
+### <font style="color:rgb(51, 51, 51);">② 在 DAO/Room 中已有 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">getRecordsByDateRange</font>`<font style="color:rgb(51, 51, 51);">，直接用</font>
+### <font style="color:rgb(51, 51, 51);">③ 在 BillsFragment 中实现筛选逻辑</font>
+```kotlin
+private var currentFilterStart: Long? = null
+private var currentFilterEnd: Long? = null
+
+private fun setupFilter() {
+    binding.chipFilter.setOnClickListener { showMonthPicker() }
+
+    binding.chipFilter.setOnCloseIconClickListener {
+        // X 按钮清除筛选
+        currentFilterStart = null
+        currentFilterEnd = null
+        binding.chipFilter.isChecked = false
+        loadRecords()
+    }
+}
+
+private fun showMonthPicker() {
+    val cal = Calendar.getInstance()
+    DatePickerDialog(
+        requireContext(),
+        { _, year, month, _ ->
+            // 选中某月，设置该月第一天和最后一天的时间戳
+            cal.set(year, month, 1, 0, 0, 0)
+            cal.set(Calendar.MILLISECOND, 0)
+            currentFilterStart = cal.timeInMillis
+
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
+            cal.set(Calendar.HOUR_OF_DAY, 23)
+            cal.set(Calendar.MINUTE, 59)
+            cal.set(Calendar.SECOND, 59)
+            currentFilterEnd = cal.timeInMillis
+
+            binding.chipFilter.isChecked = true
+            binding.chipFilter.text = "${year}年${month + 1}月"
+            loadRecords()
+        },
+        cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), 1
+    ).apply {
+        // 只显示年月选择器
+        datePicker.findViewById<View>(
+            resources.getIdentifier("day", "id", "android")
+        )?.visibility = View.GONE
+    }.show()
+}
+
+private fun loadRecords() {
+    viewModel.viewModelScope.launch {
+        val records = if (currentFilterStart != null && currentFilterEnd != null) {
+            // 实际应用中应通过 ViewModel/Repository 查询
+            AppDatabase.getInstance(requireContext()).recordDao()
+                .getRecordsByDateRange(currentFilterStart!!, currentFilterEnd!!)
+        } else {
+            AppDatabase.getInstance(requireContext()).recordDao().getAllRecords()
+        }
+        adapter.updateRecords(records)
+    }
+}
+```
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">成就解锁</font>**<font style="color:rgb(119, 119, 119);">：筛选功能完成，数据再多也不怕！</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">X4 </font><font style="color:rgb(51, 51, 51);">🔍</font><font style="color:rgb(51, 51, 51);"> 智能搜索 —— 按关键词搜索记录</font>
+**<font style="color:rgb(119, 119, 119);">学什么</font>**<font style="color:rgb(119, 119, 119);">：SearchView、SQL LIKE 查询、列表实时过滤</font>
+
+### <font style="color:rgb(51, 51, 51);">① 在 DAO 中加搜索查询</font>
+```kotlin
+/** 按关键词搜索：匹配分类名或备注 */
+@Query("SELECT * FROM records WHERE category LIKE '%' || :keyword || '%' OR note LIKE '%' || :keyword || '%' ORDER BY date DESC")
+suspend fun searchRecords(keyword: String): List<Record>
+```
+
+### <font style="color:rgb(51, 51, 51);">② 布局加 SearchView</font>
+<font style="color:rgb(51, 51, 51);">在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">fragment_bills.xml</font>`<font style="color:rgb(51, 51, 51);"> 的标题行下追加：</font>
+
+```kotlin
+<androidx.appcompat.widget.SearchView
+    android:id="@+id/search_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginTop="8dp"
+    android:queryHint="搜索分类或备注…"
+    android:visibility="gone" />
+```
+
+### <font style="color:rgb(51, 51, 51);">③ 在 Fragment 中实现搜索</font>
+```kotlin
+private fun setupSearch() {
+    // 长按筛选按钮 或 新增搜索按钮 触发
+    binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean = false
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            // 每输入一个字就实时过滤
+            val keyword = newText?.trim() ?: ""
+            viewModel.viewModelScope.launch {
+                val results = if (keyword.isBlank()) {
+                    AppDatabase.getInstance(requireContext()).recordDao().getAllRecords()
+                } else {
+                    AppDatabase.getInstance(requireContext()).recordDao().searchRecords(keyword)
+                }
+                adapter.updateRecords(results)
+            }
+            return true
+        }
+    })
+}
+```
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">成就解锁</font>**<font style="color:rgb(119, 119, 119);">：实时搜索完成，应用越来越像专业产品了！</font>
+
+---
+
+## <font style="color:rgb(51, 51, 51);">X5 </font><font style="color:rgb(51, 51, 51);">⚡</font><font style="color:rgb(51, 51, 51);"> 极速刷新 —— DiffUtil 精准更新列表</font>
+**<font style="color:rgb(119, 119, 119);">学什么</font>**<font style="color:rgb(119, 119, 119);">：DiffUtil 差异计算算法、RecyclerView 局部刷新、列表动画</font>
+
+### <font style="color:rgb(51, 51, 51);">为什么做这个</font>
+<font style="color:rgb(51, 51, 51);">当前 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordAdapter</font>`<font style="color:rgb(51, 51, 51);"> 用 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">notifyDataSetChanged()</font>`<font style="color:rgb(51, 51, 51);"> —— </font>**<font style="color:rgb(51, 51, 51);">不管数据有没有变，全部重新画一遍</font>**<font style="color:rgb(51, 51, 51);">。当记录超过几十条时，画面会明显闪烁。</font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">DiffUtil</font>`<font style="color:rgb(51, 51, 51);"> 做的事情是：</font>
+
+```kotlin
+旧列表：   [A,   B,   C,   D]
+新列表：   [A,   C,   E,   D]
+           ↑   ↑     ↑   ↑
+DiffUtil: 不变  删B  加E  不变  →  只刷新这 3 条！
+```
+
+**<font style="color:rgb(51, 51, 51);">只看变化的部分</font>**<font style="color:rgb(51, 51, 51);">，而且 RecyclerView 会自动播放插入/删除的</font>**<font style="color:rgb(51, 51, 51);">过渡动画</font>**<font style="color:rgb(51, 51, 51);">！</font>
+
+### <font style="color:rgb(51, 51, 51);">理念对比</font>
+| **<font style="color:rgb(51, 51, 51);">旧方式（notifyDataSetChanged）</font>** | **<font style="color:rgb(51, 51, 51);">新方式（DiffUtil）</font>** |
+| :--- | :--- |
+| <font style="color:rgb(51, 51, 51);">刷新全部，不管变了多少</font> | <font style="color:rgb(51, 51, 51);">只刷新变化的部分</font> |
+| <font style="color:rgb(51, 51, 51);">列表闪烁</font> | <font style="color:rgb(51, 51, 51);">丝滑的插入/删除动画</font> |
+| <font style="color:rgb(51, 51, 51);">数据多时卡顿</font> | <font style="color:rgb(51, 51, 51);">数据再多也没压力</font> |
+| <font style="color:rgb(51, 51, 51);">无动画</font> | <font style="color:rgb(51, 51, 51);">RecyclerView 自动生成动画</font> |
+
+
+### <font style="color:rgb(51, 51, 51);">① 在 RecordAdapter 中添加 DiffUtil.Callback</font>
+<font style="color:rgb(51, 51, 51);">修改 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">ui/adapter/RecordAdapter.kt</font>`<font style="color:rgb(51, 51, 51);">，在类内部添加：</font>
+
+```kotlin
+import androidx.recyclerview.widget.DiffUtil
+
+class RecordAdapter(
+    private val onItemClick: (Record) -> Unit,
+    private val onItemLongClick: (Record) -> Unit
+) : RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
+
+    private val records = mutableListOf<Record>()
+
+    /**
+     * 使用 DiffUtil 精准更新列表
+     *
+     * 对比旧列表和新列表，只通知 RecyclerView 变化的部分，
+     * 未变化的 item 不会重新 onBindViewHolder。
+     */
+    fun updateRecords(newRecords: List<Record>) {
+        val diffResult = DiffUtil.calculateDiff(
+            RecordDiffCallback(records, newRecords)
+        )
+        records.clear()
+        records.addAll(newRecords)
+        diffResult.dispatchUpdatesTo(this)  // ← 内部调用 notifyItemInserted/Removed/Changed
+    }
+
+    // ===== DiffUtil 回调：告诉 DiffUtil 如何判断两条记录是否相同 =====
+
+    class RecordDiffCallback(
+        private val oldList: List<Record>,
+        private val newList: List<Record>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+
+        /**
+         * 判断两个 position 是否是同一条记录（用 id 比较）
+         */
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
+        }
+
+        /**
+         * 判断同一条记录的内容是否发生变化（所有字段比较）
+         */
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val old = oldList[oldItemPosition]
+            val new = newList[newItemPosition]
+            return old.type == new.type &&
+                    old.category == new.category &&
+                    old.amount == new.amount &&
+                    old.note == new.note &&
+                    old.date == new.date
+        }
+
+        /**
+         * 当 areItemsTheSame 为 true 但 areContentsTheSame 为 false 时，
+         * 返回变化的内容用于局部刷新（可选优化）
+         */
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+            val old = oldList[oldItemPosition]
+            val new = newList[newItemPosition]
+
+            // 只返回变化的字段，避免整条重新绑定
+            val bundle = Bundle()
+            if (old.amount != new.amount) bundle.putDouble("amount", new.amount)
+            if (old.type != new.type) bundle.putInt("type", new.type)
+            if (old.category != new.category) bundle.putString("category", new.category)
+            if (old.note != new.note) bundle.putString("note", new.note)
+            if (old.date != new.date) bundle.putLong("date", new.date)
+            return if (bundle.isEmpty) null else bundle
+        }
+    }
+
+    // ... 其余代码不变（ViewHolder、bind 等保持不变）
+}
+```
+
+### <font style="color:rgb(51, 51, 51);">② 利用 Payload 做局部刷新（可选优化）</font>
+<font style="color:rgb(51, 51, 51);">如果想更极致地优化，可以让 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">onBindViewHolder</font>`<font style="color:rgb(51, 51, 51);"> 识别 payload：</font>
+
+```kotlin
+override fun onBindViewHolder(
+    holder: RecordViewHolder,
+    position: Int,
+    payloads: MutableList<Any>
+) {
+    if (payloads.isEmpty()) {
+        // 没有 payload，完整绑定
+        super.onBindViewHolder(holder, position, payloads)
+        return
+    }
+
+    // 有 payload，只更新变化的字段
+    val record = records[position]
+    for (payload in payloads) {
+        (payload as? Bundle)?.let { bundle ->
+            bundle.getDouble("amount", -1.0).let {
+                if (it >= 0) holder.updateAmount(record)
+            }
+            bundle.getString("category")?.let { holder.updateCategory(record) }
+            bundle.getString("note")?.let { holder.updateNote(record) }
+        }
+    }
+}
+```
+
+<font style="color:rgb(51, 51, 51);">然后在 </font>`<font style="color:rgb(51, 51, 51);background-color:rgb(243, 244, 244);">RecordViewHolder</font>`<font style="color:rgb(51, 51, 51);"> 中补充局部更新方法：</font>
+
+```kotlin
+fun updateAmount(record: Record) {
+    val isIncome = record.type == Record.TYPE_INCOME
+    val prefix = if (isIncome) "+" else "-"
+    binding.tvAmount.text = "${prefix}¥${DateUtils.formatAmount(record.amount)}"
+    binding.tvAmount.setTextColor(
+        Color.parseColor(if (isIncome) "#2ECC71" else "#E74C3C")
+    )
+}
+
+fun updateCategory(record: Record) {
+    binding.tvCategoryIcon.text = record.category.first().toString()
+    binding.tvCategoryName.text = record.category
+}
+
+fun updateNote(record: Record) {
+    if (!record.note.isNullOrBlank()) {
+        binding.tvNote.text = "备注：${record.note}"
+        binding.tvNote.visibility = View.VISIBLE
+    } else {
+        binding.tvNote.visibility = View.GONE
+    }
+}
+```
+
+### <font style="color:rgb(51, 51, 51);">③ 运行测试</font>
+1. <font style="color:rgb(51, 51, 51);">添加一条记录 → 新卡片从底部</font>**<font style="color:rgb(51, 51, 51);">滑入</font>**
+2. <font style="color:rgb(51, 51, 51);">编辑一条记录的金额 → 该行金额数字</font>**<font style="color:rgb(51, 51, 51);">平滑更新</font>**<font style="color:rgb(51, 51, 51);">，其他行不动</font>
+3. <font style="color:rgb(51, 51, 51);">删除一条记录 → 该卡片</font>**<font style="color:rgb(51, 51, 51);">淡出消失</font>**
+
+**<font style="color:rgb(51, 51, 51);">你应该看到</font>**<font style="color:rgb(51, 51, 51);">：</font>
+
++ <font style="color:rgb(51, 51, 51);">增删改操作带有流畅的系统动画</font>
++ <font style="color:rgb(51, 51, 51);">列表不再闪烁</font>
++ <font style="color:rgb(51, 51, 51);">大量数据时（几十条）滑动依然丝滑</font>
+
+<font style="color:rgb(119, 119, 119);">🎉</font><font style="color:rgb(119, 119, 119);"> </font>**<font style="color:rgb(119, 119, 119);">成就解锁</font>**<font style="color:rgb(119, 119, 119);">：列表性能质变，从此告别闪烁卡顿！</font>
 
 

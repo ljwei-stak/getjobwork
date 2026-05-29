@@ -22,4 +22,34 @@
     <color name="task2_color">#2ECC71</color>
     <color name="task3_color">#F39C12</color>
     <color name="task4_color">#E74C3C</color>
+    <color name="task5_color">#9B59B6</color>
+    <color name="task6_color">#00BCD4</color>
+
+    <!-- 支出分类饼图颜色 -->
+    <array name="expense_colors">
+        <item>#E74C3C</item>
+        <item>#E67E22</item>
+        <item>#F39C12</item>
+        <item>#F1C40F</item>
+        <item>#2ECC71</item>
+        <item>#1ABC9C</item>
+        <item>#3498DB</item>
+        <item>#9B59B6</item>
+        <item>#34495E</item>
+        <item>#95A5A6</item>
+    </array>
+
+    <!-- 收入分类饼图颜色 -->
+    <array name="income_colors">
+        <item>#2ECC71</item>
+        <item>#27AE60</item>
+        <item>#1ABC9C</item>
+        <item>#16A085</item>
+        <item>#3498DB</item>
+        <item>#2980B9</item>
+        <item>#9B59B6</item>
+        <item>#8E44AD</item>
+        <item>#F39C12</item>
+        <item>#E67E22</item>
+    </array>
 </resources>

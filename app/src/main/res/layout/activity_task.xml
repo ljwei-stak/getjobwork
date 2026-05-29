@@ -7,6 +7,14 @@
     android:background="@color/bg_light"
     android:orientation="vertical">
 
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@android:color/white" />
+
     <!-- Tab 标签栏：【账单】 【统计】 -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"

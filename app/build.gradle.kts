@@ -53,6 +53,17 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.coroutines.android)
+    implementation(libs.mpandroidchart)
+    
+    // Task7: 文件解析和PDF生成
+    implementation("org.apache.poi:poi:5.2.5")              // Excel解析
+    implementation("org.apache.poi:poi-ooxml:5.2.5")        // Excel (xlsx)解析
+    implementation("com.opencsv:opencsv:5.7.1")             // CSV解析
+    implementation("com.itextpdf:itext7-core:7.2.5")        // PDF生成
+    implementation("com.squareup.retrofit2:retrofit:2.9.0") // AI API调用
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // JSON转换
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0") // 网络日志
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
